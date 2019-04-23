@@ -1,7 +1,8 @@
-# RTMPi
+# raspberryConverter
 
 *This project is in early development stage and is by no means ready to use.*
-RTMPi is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3. The project consist on two main elements: a web server that provides a web interface to configure the service and a player to show the streaming content.
+
+raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3. The project consist on two main elements: a web server that provides a web interface to configure the service and a player to show the streaming content.
 
 ## Usage
 
