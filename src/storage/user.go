@@ -8,7 +8,8 @@ import (
 )
 
 type User struct {
- Username string `gorm:"primary_key"`
+ gorm.Model
+ Username string
  HashedPassword []byte
 }
 
@@ -28,7 +29,48 @@ func GetHashedPasswword(username string) ([]byte, error) {
   return user.HashedPassword, nil
 }
 
-func createDefaultUser() User {
-  hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin"), 14)
-  return User{Username: "admin", HashedPassword: hashedPassword}
+func UpdatePassword(username string, oldPass string, newPass string) error {
+  // connect to db
+  db, err := gorm.Open("sqlite3", "gorm.db")
+  defer db.Close()
+  if err != nil {
+    return err
+  }
+  // get user with given username
+  var user User
+  dbc := db.Where(
+    "username = ?",
+    username,
+  ).First(&user)
+  if dbc.Error != nil {
+    return dbc.Error
+  }
+  if bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(oldPass)) != nil {
+    return errors.New("Incorrect old password")
+  }
+  hashedNew, err := bcrypt.GenerateFromPassword([]byte(newPass), 14)
+  if err != nil { return errors.New("Error hashing password") }
+  user.HashedPassword = hashedNew
+  if dbc := db.Save(user); dbc.Error != nil {
+    return dbc.Error
+  }
+  return nil
+}
+
+func createDefaultUser() error {
+  db, err := gorm.Open("sqlite3", "gorm.db")
+  defer db.Close()
+  if err != nil {
+    return err
+  }
+  registeredValues := 0
+  db.Find(&User{}).Count(&registeredValues)
+  if registeredValues == 0 {
+    hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin"), 14)
+    db.Create(&User{
+      Username: "admin",
+      HashedPassword: hashedPassword,
+    })
+  }
+  return nil
 }

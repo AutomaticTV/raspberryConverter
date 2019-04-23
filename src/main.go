@@ -4,19 +4,22 @@ import (
        "log"
        "net/http"
        "fmt"
+       "reflect"
        "app/frontend"
 			 "app/storage"
  )
 
 
  func DashboardHandler(w http.ResponseWriter, r *http.Request) {
-        conditionsMap := map[string]interface{}{}
+        conditions := map[string]interface{}{}
+        // IF NOT LOGGED IN, GO TO LOGIN PAGE
          if !IsLoggedIn(r) {
            http.Redirect(w, r, "/login", http.StatusFound)
            return
          }
+         // CHECK IF THE REQUEST INCLUDES A FORM
          if r.FormValue("UpdateStatus") != "" {
-           fmt.Println("Updating status:")
+
          } else if r.FormValue("UpdatePlayer") != "" {
            fmt.Println("Updating player:")
            fmt.Println("Video", r.FormValue("Video"))
@@ -28,8 +31,8 @@ import (
            fmt.Println("Password", r.FormValue("Password"))
            fmt.Println("Volume", r.FormValue("Volume"))
            fmt.Println("Autoplay", r.FormValue("Autoplay"))
-           conditionsMap["PlayerError"] = true
-           conditionsMap["PlayerErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
+           conditions["PlayerError"] = true
+           conditions["PlayerErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
          } else if r.FormValue("UpdateNetwork") != "" {
            fmt.Println("Updating network:")
            fmt.Println("Mode", r.FormValue("Mode"))
@@ -38,59 +41,83 @@ import (
            fmt.Println("Netmask", r.FormValue("Netmask"))
            fmt.Println("DNS1", r.FormValue("DNS1"))
            fmt.Println("DNS2", r.FormValue("DNS2"))
-           conditionsMap["NetworkError"] = true
-           conditionsMap["NetworkErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
+           conditions["NetworkError"] = true
+           conditions["NetworkErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
          } else if r.FormValue("UpdatePassword") != "" {
-           fmt.Println("Updating password:")
-         }
-         // Set up values to fill template
-         fmt.Println(r.URL.Path)
-         switch r.URL.Path {
-         case "/dashboard/status":
-           conditionsMap["Page"] = "Status"
-           conditionsMap["CPU"] = 70
-           conditionsMap["RAM"] = 24
-           conditionsMap["URL"] = "https://some.example"
-           conditionsMap["Video"] = "1080p59.94"
-           conditionsMap["Status"] = "Running"
-         case "/dashboard/":
-           conditionsMap["Page"] = "Status"
-           conditionsMap["CPU"] = 70
-           conditionsMap["RAM"] = 24
-           conditionsMap["URL"] = "https://some.example"
-           conditionsMap["Video"] = "1080p59.94"
-           conditionsMap["Status"] = "Running"
-         case "/dashboard/player":
-           conditionsMap["Page"] = "Player"
-           conditionsMap["Video"] = "1080p59.94"
-           conditionsMap["AudioDecoding"] = "Software"
-           conditionsMap["URL"] = "https://some.example"
-           conditionsMap["Transport"] = "HTTP"
-           conditionsMap["Buffer"] = 300
-           conditionsMap["Username"] = "admin"
-           conditionsMap["Password"] = "admin"
-           conditionsMap["Volume"] = 0
-           conditionsMap["Autoplay"] = "No"
-         case "/dashboard/network":
-           conditionsMap["Page"] = "Network"
-           conditionsMap["Mode"] = "Static"
-           conditionsMap["IP"] = "192.168.1.57"
-           conditionsMap["Netmask"] = "255.255.255.0"
-           conditionsMap["Gateway"] = "192.168.1.1"
-           conditionsMap["DNS1"] = "8.8.8.8"
-           conditionsMap["DNS2"] = "8.8.8.8"
-         case "/dashboard/password": conditionsMap["Page"] = "Password"
-         default: conditionsMap["Page"] = "Status"
+           err := UpdatePassword(
+             r.FormValue("Username"),
+             r.FormValue("OldPassword"),
+             r.FormValue("NewPassword"),
+             r.FormValue("RePassword"),
+           )
+           if (err != nil){
+             fmt.Println(err)
+             AddError(err.Error(), conditions)
+           } else {
+             AddSuccess("Password updated successfuly", conditions)
+           }
          }
 
-         // Create html from template
-         if err := template.Dashboard.Execute(w, conditionsMap); err != nil {
+         // SET CONDITIONS TO FILL TEMPLATE IF REQUIRED AFTER FORM
+         switch r.URL.Path {
+         case "/dashboard/status":
+           SetConditions(storage.GetStatus, "Status", conditions, "Unable to retrieve last status.")
+         case "/dashboard/player":
+           SetConditions(storage.GetPlayer, "Player", conditions, "Unable to retrieve last player setings.")
+         case "/dashboard/network":
+           SetConditions(storage.GetNetwork, "Network", conditions, "Unable to retrieve last network setings.")
+         case "/dashboard/password":
+           conditions["Page"] = "Password"
+         default:
+           http.Redirect(w, r, "/dashboard/status", http.StatusFound)
+           return
+         }
+
+         // CREATE HTML FROM TEMPLATE USING CONDITIONS
+         if err := template.Dashboard.Execute(w, conditions); err != nil {
                  log.Println(err)
          }
  }
 
+ func SetConditions(get func() (interface{}, error), page string, conditions map[string]interface{}, errorMessage string) {
+   values, err := get()
+   if err != nil {
+     fmt.Println(err)
+     AddError(errorMessage, conditions)
+   } else {
+     AddToConditionsMap(&values, conditions)
+   }
+   conditions["Page"] = page
+ }
+
+ func AddError(message string, conditions map[string]interface{}) {
+   // test!!!!
+   conditions["Error"] = true
+   if _, ok := conditions["ErrorMessage"]; ok {
+        conditions["ErrorMessage"] = conditions["ErrorMessage"].(string) + "; " + message
+    } else {
+      conditions["ErrorMessage"] = message
+    }
+ }
+
+  func AddSuccess(message string, conditions map[string]interface{}) {
+    conditions["Success"] = true
+    conditions["SuccessMessage"] = message
+  }
+
+ func AddToConditionsMap(record *interface{}, conditions map[string]interface{}) {
+    values := reflect.ValueOf(*record).Elem()
+    names := values.Type()
+    for i := 0; i < values.NumField(); i++ {
+      name := names.Field(i).Name
+      if name != "Model" {
+        conditions[name] = values.Field(i).Interface()
+      }
+    }
+ }
+
  func LoginHandler(w http.ResponseWriter, r *http.Request) {
-         conditionsMap := map[string]interface{}{}
+         conditions := map[string]interface{}{}
 
          // ALREADY LOGGED IN? Go to dashboard
          if IsLoggedIn(r) {
@@ -104,21 +131,21 @@ import (
                  password := r.FormValue("Password")
                  // PASSWORD CORRECT, GO TO DASHBOARD
 								 if PasswordIsCorrect(username, password) {
-                         conditionsMap["LoginError"] = false
+                         conditions["LoginError"] = false
                          err := Login(w, r, username)
                          if err != nil {
-                           conditionsMap["LoginError"] = true
+                           conditions["LoginError"] = true
                          }
 
                          http.Redirect(w, r, "/dashboard", http.StatusFound)
                          return
                  } else { // PASSWORD ERROR, ADD ERROR MESSAGE TO TEMPLATE
-                         conditionsMap["LoginError"] = true
+                         conditions["LoginError"] = true
                  }
          }
 
          // SERVE LOGIN PAGE
-         if err := template.Login.Execute(w, conditionsMap); err != nil {
+         if err := template.Login.Execute(w, conditions); err != nil {
                  fmt.Println(err)
          }
  }

@@ -34,7 +34,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="IPInput">
-                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="IP" name="IP" value="{{.IP}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="IP" name="IP" value="{{.IP}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -49,7 +49,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="NetmaskInput">
-                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Netmask" name="Netmask" value="{{.Netmask}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Netmask" name="Netmask" value="{{.Netmask}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -64,7 +64,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="GatewayInput">
-                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Gateway" name="Gateway" value="{{.Gateway}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Gateway" name="Gateway" value="{{.Gateway}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -79,7 +79,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="DNS1Input">
-                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS1" name="DNS1" value="{{.DNS1}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS1" name="DNS1" value="{{.DNS1}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -94,14 +94,14 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="DNS2Input">
-                        <input {{if eq .Mode "Status"}}disabled{{end}} class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS2" name="DNS2" value="{{.DNS2}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS2" name="DNS2" value="{{.DNS2}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
                </li>
-               {{if .NetworkError}}
+               {{if .Error}}
                <li class="mdl-list__item">
-                  <p style="color:red">{{.NetworkErrorMessage}}</p>
+                  <p style="color:red">{{.ErrorMessage}}</p>
                </li>
                {{end}}
             </ul>
@@ -167,6 +167,11 @@
       NetmaskI.MaterialTextfield.checkDirty();
       DNS1I.MaterialTextfield.checkDirty();
       DNS2I.MaterialTextfield.checkDirty();
+      IPI.MaterialTextfield.checkValidity();
+      GatewayI.MaterialTextfield.checkValidity();
+      NetmaskI.MaterialTextfield.checkValidity();
+      DNS1I.MaterialTextfield.checkValidity();
+      DNS2I.MaterialTextfield.checkValidity();
    	} catch (e) {
    		setTimeout(() => onModeChange(newValue), 100);
    	}
@@ -176,39 +181,49 @@
     IPStatic = IP.value;
     IP.value = IPDHCP;
     IPI.MaterialTextfield.disable();
+    IP.setAttribute("pattern", ".");
 
     GatewayStatic = Gateway.value;
     Gateway.value = GatewayDHCP;
     GatewayI.MaterialTextfield.disable();
+    Gateway.setAttribute("pattern", ".");
 
     NetmaskStatic = Netmask.value;
     Netmask.value = NetmaskDHCP;
     NetmaskI.MaterialTextfield.disable();
+    Netmask.setAttribute("pattern", ".");
 
     DNS1Static = DNS1.value;
     DNS1.value = DNS1DHCP;
     DNS1I.MaterialTextfield.disable();
+    DNS1.setAttribute("pattern", ".");
 
     DNS2Static = DNS2.value;
     DNS2.value = DNS2DHCP;
     DNS2I.MaterialTextfield.disable();
+    DNS2.setAttribute("pattern", ".");
    }
 
    function enable(){
     IP.value = IPStatic;
     IPI.MaterialTextfield.enable();
+    IP.setAttribute("pattern", "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     Gateway.value = GatewayStatic;
     GatewayI.MaterialTextfield.enable();
+    Gateway.setAttribute("pattern", "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     Netmask.value = NetmaskStatic;
     NetmaskI.MaterialTextfield.enable();
+    Netmask.setAttribute("pattern", "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     DNS1.value = DNS1Static;
     DNS1I.MaterialTextfield.enable();
+    DNS1.setAttribute("pattern", "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     DNS2.value = DNS2Static;
     DNS2I.MaterialTextfield.enable();
+    DNS2.setAttribute("pattern", "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
    }
 </script>
 {{end}}

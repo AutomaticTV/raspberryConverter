@@ -16,13 +16,13 @@ func InitStorage() {
 
   // DB table creation / migration
   db.AutoMigrate(&User{})
+  db.AutoMigrate(&Status{})
+  db.AutoMigrate(&Player{})
+  db.AutoMigrate(&Network{})
 
-  // set default values if necesary
-  registeredUsers := 0
-  db.Find(&User{}).Count(&registeredUsers)
-  if registeredUsers == 0 {
-    fmt.Println("Seting default user")
-    defaultUser := createDefaultUser()
-    db.Create(&defaultUser)
-  }
+  // set default values (if needed!)
+  createDefaultUser()
+  createDefaultStatus()
+  createDefaultPlayer()
+  createDefaultNetwork()
 }

@@ -50,9 +50,9 @@
              <div class="mdl-layout-spacer"></div>
              <a class="mdl-navigation__link">{{.Status}}</a>
             </li>
-            {{if .StatusError}}
+            {{if .Error}}
             <li class="mdl-list__item">
-               <p style="color:red">{{.StatusErrorMessage}}</p>
+               <p style="color:red">{{.ErrorMessage}}</p>
             </li>
             {{end}}
          </ul>
