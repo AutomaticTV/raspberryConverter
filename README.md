@@ -1,6 +1,6 @@
 # raspberryConverter
 
-*This project is in early development stage and is by no means ready to use.*
+***This project is in early development stage and is by no means ready to use.***
 
 raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3. The project consist on two main elements: a web server that provides a web interface to configure the service and a player to show the streaming content.
 
@@ -8,10 +8,11 @@ raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Ras
 
 If you just want to test/develop the web part, the server can be run in any machine that uses docker:
 * clone the project and go to the folder
-* build the project: `docker build -t rtmpi .`
-* run the server: `docker run --name rtmpitest --rm -p XX:80 &` where XX is a port free on your local machine.
+* build the project: `docker build -t raspberryconverter .`
+* run the server: `docker run --name raspberryconvertertest --rm -p XX:80 raspberryconverter &` where XX is a port free on your local machine.
 * connect to the server: on your browser go to `http://localhost:XX`
-* to stop the server once you're done: `docker kill rtmpitest`
+* to stop the server once you're done: `docker kill raspberryconvertertest`
+* single command of the above: `docker kill raspberryconvertertest & docker build -t raspberryconverter . && docker run --name raspberryconvertertest --rm -p 80:80 raspberryconverter &`
 
 ## The web server
 
