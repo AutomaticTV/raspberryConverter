@@ -1,0 +1,38 @@
+{{define "content"}}
+
+<!-- Card -->
+<div class='demo-card-wide mdl-card mdl-shadow--2dp'>
+  <!-- Card title -->
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Welcome to RTMPi</h2>
+  </div>
+
+  <form class='form'  method="post" action="/login">
+    <!-- Card body -->
+    <div class="mdl-card__supporting-text">
+      <!-- Usename input -->
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="text" id="1" name="Username">
+        <label class="color-accent mdl-textfield__label" for="1">Username</label>
+      </div>
+
+      <!-- Password input -->
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="password" id="2" name="Password">
+        <label class="color-accent mdl-textfield__label" for="2">Password</label>
+      </div>
+
+      <!-- Error message -->
+      {{if .LoginError}}<p style="color:red">Incorrect username or password. The default username is admin, same for password.</p>{{end}}
+
+      <!-- Card foot -->
+      <div class="mdl-card__actions mdl-card--border">
+        <!-- Login button -->
+        <input type="submit" class="main-color mdl-button mdl-js-button mdl-button--raised" value="Log in" name="Login">
+      </div>
+    </div>
+
+  </form>
+</div>
+
+{{end}}

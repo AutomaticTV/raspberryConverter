@@ -1,0 +1,185 @@
+{{define "player"}}
+
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--6-col">
+      <!-- Card -->
+      <div class='demo-card-wide mdl-card mdl-shadow--6dp'>
+         <form class='form'  method="post" action="">
+            <!-- Card body -->
+            <ul class="mdl-list">
+               <!-- Video: -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                   <div class="mdl-list__item-primary-content">
+                      <div class="color-accent mdl-color-text">Video output: </div>
+                      <div class="mdl-list__item-text-body">
+                         Choose the resolution and refresh rate of the video.
+                      </div>
+                   </div>
+                   <div class="mdl-list__item-secondary-content">
+                      <div class="mdl-selectfield mdl-js-selectfield">
+                         <select class="mdl-selectfield__select" id="Video" name="Video" initialValueHackVideo="{{.Video}}">
+                            <option value="480i59.94">480i59.94 (4/3)</option>
+                            <option value="480i59.94">480i59.94 (16/9)</option>
+                            <option value="576i50">576i50 (4/3)</option>
+                            <option value="576i50">576i50 (16/9)</option>
+                            <option value="720p50">720p50 (16/9)</option>
+                            <option value="720p59.94">720p59.94 (16/9)</option>
+                            <option value="1080i50">1080i50 (16/9)</option>
+                            <option value="1080i59.94">1080i59.94 (16/9)</option>
+                            <option value="1080p50">1080p50 (16/9)</option>
+                            <option value="1080p59.94">1080p59.94 (16/9)</option>
+                         </select>
+                      </div>
+                   </div>
+                </li>
+               <!-- AudioDecoding: hard/soft -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                   <div class="mdl-list__item-primary-content">
+                      <div class="color-accent mdl-color-text">Audio decoding: </div>
+                      <div class="mdl-list__item-text-body">
+                         Choose between hardware or software audio decoding.
+                      </div>
+                   </div>
+                   <div class="mdl-list__item-secondary-content">
+                      <div class="mdl-selectfield mdl-js-selectfield">
+                         <select class="mdl-selectfield__select" id="AudioDecoding" name="AudioDecoding" initialValueHackAudioDecoding="{{.AudioDecoding}}">
+                            <option value="Hardware">Hardware</option>
+                            <option value="Software">Software</option>
+                         </select>
+                      </div>
+                   </div>
+                </li>
+               <!-- URL -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">URL: </div>
+                     <div class="mdl-list__item-text-body">
+                        Address of the streaming service.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield">
+                        <input required class="mdl-textfield__input" pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})" type="text" id="URL" name="URL" value="{{.URL}}">
+                        <div class="mdl-textfield__error">Invalid format</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- Transport: TCP / UDP / HTTP -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                   <div class="mdl-list__item-primary-content">
+                      <div class="color-accent mdl-color-text">Transport: </div>
+                      <div class="mdl-list__item-text-body">
+                         Choose the trasnport protocol for the streaming service.
+                      </div>
+                   </div>
+                   <div class="mdl-list__item-secondary-content">
+                      <div class="mdl-selectfield mdl-js-selectfield">
+                         <select class="mdl-selectfield__select" id="Transport" name="Transport" initialValueHackTransport="{{.Transport}}">
+                            <option value="TCP">TCP</option>
+                            <option value="UDP">UDP</option>
+                            <option value="HTTP">HTTP</option>
+                         </select>
+                      </div>
+                   </div>
+                </li>
+               <!-- Buffer: 100 (300) 30000 -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Playback buffer: </div>
+                     <div class="mdl-list__item-text-body">
+                        Ammount of time the video is buffered. Value must be between 100 and 30000 (in miliseconds).
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield">
+                        <input required class="mdl-textfield__input" pattern="([1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[12][0-9]{4}|30000)" type="text" id="Buffer" name="Buffer" value="{{.Buffer}}">
+                        <div class="mdl-textfield__error">Must be a number, min: 100 max: 30000</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- Username -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Username: </div>
+                     <div class="mdl-list__item-text-body">
+                        Username of the service if reuqired.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="Username" name="Username" value="{{.Username}}">
+                     </div>
+                  </div>
+               </li>
+               <!-- Password -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Password: </div>
+                     <div class="mdl-list__item-text-body">
+                        Password of the service if reuqired.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="password" id="Password" name="Password" value="{{.Password}}">
+                     </div>
+                  </div>
+               </li>
+               <!-- Volume: 0 (0) 100 -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Audio volume: </div>
+                     <div class="mdl-list__item-text-body">
+                        Volume of the auido. Value must be between 0 and 100 (in %).
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield">
+                        <input required class="mdl-textfield__input" pattern="([0-9]|[1-8][0-9]|9[0-9]|100)" type="text" id="Volume" name="Volume" value="{{.Volume}}">
+                        <div class="mdl-textfield__error">Must be a number, min: 0 max: 100</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- Autoplay: yes / no -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                   <div class="mdl-list__item-primary-content">
+                      <div class="color-accent mdl-color-text">Autoplay stream: </div>
+                      <div class="mdl-list__item-text-body">
+                         Start playing the stream when turning on the device?
+                      </div>
+                   </div>
+                   <div class="mdl-list__item-secondary-content">
+                      <div class="mdl-selectfield mdl-js-selectfield">
+                         <select class="mdl-selectfield__select" id="Autoplay" name="Autoplay" initialValueHackAutoplay="{{.Autoplay}}">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                         </select>
+                      </div>
+                   </div>
+                </li>
+               {{if .PlayerError}}
+               <li class="mdl-list__item">
+                  <p style="color:red">{{.PlayerErrorMessage}}</p>
+               </li>
+               {{end}}
+            </ul>
+            <!-- Card foot -->
+            <div class="mdl-card__actions mdl-card--border">
+               <!-- Update button -->
+               <input type="submit" class="main-color mdl-button mdl-js-button mdl-button--raised" value="Update {{.Page}}" name="Update{{.Page}}">
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(event) {
+      document.getElementById("Video").value = document.getElementById("Video").getAttribute("initialValueHackVideo");
+      document.getElementById("AudioDecoding").value = document.getElementById("AudioDecoding").getAttribute("initialValueHackAudioDecoding");
+      document.getElementById("Transport").value = document.getElementById("Transport").getAttribute("initialValueHackTransport");
+    	document.getElementById("Autoplay").value = document.getElementById("Autoplay").getAttribute("initialValueHackAutoplay");
+    });
+</script>
+
+{{end}}

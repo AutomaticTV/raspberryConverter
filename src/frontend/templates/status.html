@@ -1,0 +1,103 @@
+
+
+{{define "status"}}
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--6-col">
+      <!-- Card -->
+      <div class='demo-card-wide mdl-card mdl-shadow--6dp'>
+         <!-- Card body -->
+         <ul class="mdl-list">
+            <!-- System load: CPU & Memory -->
+            <li class="mdl-list__item">
+             <div class="color-accent mdl-color-text">System load: </div>
+             <div class="mdl-layout-spacer"></div>
+             <svg width="200px" height="100px" viewBox="0 0 200 100" class="demo-chart mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+                 <path d="
+                   M 10 100
+                   A 90 90 0 0 1 190 100
+                   A 90 90 0 0 0 10 100
+                   Z" stroke="var(--primary-color-light)" stroke-width="20" fill="none"
+                 />
+                <text x="100" y="80" font-size="30" fill="var(--font-color)" text-anchor="middle">CPU</text>
+                <path id="CPU" receivedvalue="{{.CPU}}" d="M 10 0" stroke="var(--primary-color)" stroke-width="20" fill="none"/>
+             </svg>
+             <svg width="200px" height="100px" viewBox="0 0 200 100" class="demo-chart mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+                 <path d="
+                   M 10 100
+                   A 90 90 0 0 1 190 100
+                   A 90 90 0 0 0 10 100
+                   Z" stroke="var(--accent-color-light)" stroke-width="20" fill="none"
+                 />
+                <text x="100" y="80" font-size="30" fill="var(--font-color)" text-anchor="middle">RAM</text>
+                <path id="RAM" receivedvalue="{{.RAM}}" d="M 10 0" stroke="var(--accent-color)" stroke-width="20" fill="none"/>
+             </svg>
+            </li>
+            <!-- Stream URL: -->
+            <li class="mdl-list__item">
+             <div class="color-accent mdl-color-text">Stream URL: </div>
+             <div class="mdl-layout-spacer"></div>
+             <a class="mdl-navigation__link" href="{{.URL}}">{{.URL}}</a>
+            </li>
+            <!-- Stream Video Output -->
+            <li class="mdl-list__item">
+             <div class="color-accent mdl-color-text">Stream video output: </div>
+             <div class="mdl-layout-spacer"></div>
+             <a class="mdl-navigation__link">{{.Video}}</a>
+            </li>
+            <!-- Stream Status: (No signal / Running / Not configured) -->
+            <li class="mdl-list__item">
+             <div class="color-accent mdl-color-text">Stream status: </div>
+             <div class="mdl-layout-spacer"></div>
+             <a class="mdl-navigation__link">{{.Status}}</a>
+            </li>
+            {{if .StatusError}}
+            <li class="mdl-list__item">
+               <p style="color:red">{{.StatusErrorMessage}}</p>
+            </li>
+            {{end}}
+         </ul>
+         <!-- Card foot -->
+         <div class="mdl-card__actions mdl-card--border">
+           <div class="mdl-list__item">
+            <!-- Start streaming -->
+            <input type="submit" class="main-color mdl-button mdl-js-button mdl-button--raised" value="Start" name="Update{{.Page}}">
+            <!-- Stop streaming -->
+            <input style="margin-left:5%" type="submit" class="main-color mdl-button mdl-js-button mdl-button--raised" value="Restart" name="Update{{.Page}}">
+            <!-- Restart streaming -->
+            <div class="mdl-layout-spacer"></div>
+            <input type="submit" class="accent-color mdl-button mdl-js-button mdl-button--raised" value="Stop" name="Update{{.Page}}">
+           </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) {
+ setChart(document.getElementById("RAM"));
+ setChart(document.getElementById("CPU"));
+});
+
+function setChart (chart) {
+  const percent = chart.getAttribute("receivedvalue");
+  const coord = percentToCoordinates(percent);
+  const path = getSVGPath (coord.x, coord.y);
+  chart.setAttribute("d", path);
+}
+
+function percentToCoordinates (percent) {
+  const rad = 90;
+  const alpha = (180-( percent === 0 ? 0 : (180.0 * percent) / 100.0 )) * (Math.PI/180)
+  return {
+    x: 100 + rad * Math.cos(alpha),
+    y: 100 -rad * Math.sin(alpha)
+  }
+}
+
+function getSVGPath (x, y) {
+  return `M 10 100
+  A 90 90 0 0 1 ${x} ${y}
+  A 90 90 0 0 0 10 100
+  Z`
+}
+</script>
+{{end}}

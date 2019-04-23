@@ -1,0 +1,86 @@
+:root {
+  --primary-color-light: #fce2b3;
+  --primary-color: #F49E00;
+  --primary-color-dark: #C68100;
+  --accent-color: #E2001A;
+  --accent-color-light: #f6b3ba;
+  --font-color-light: #cfd1d2;
+  --font-color: #9C9E9F;
+  --font-color-dark: #1A171B;
+}
+
+html {
+  background: url(/static/img/bg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.demo-card-wide.mdl-card {
+  width: 700px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.demo-card-wide > .mdl-card__title {
+  background: var(--primary-color);
+  color: var(--font-color-dark);
+}
+
+.main-color, .mdl-layout__header .mdl-layout__drawer-button {
+  color: var(--font-color-dark);
+  background: var(--primary-color);
+}
+
+.main-color-light {
+  color: var(--font-color-dark);
+  background: var(--primary-color-light);
+}
+
+.accent-color {
+  color: var(--font-color-dark);
+  background: var(--accent-color);
+}
+
+.color-accent {
+  color: var(--accent-color) !important;
+}
+
+.mdl-textfield__label:after {
+    background-color: var(--accent-color) !important;
+}
+
+/* DRAWER */
+.mdl-layout__drawer span.mdl-layout-title {
+  background: var(--primary-color-light);
+  color: var(--font-color-dark);
+}
+
+.selected-color {
+  background: var(--primary-color);
+}
+
+.mdl-layout__drawer a.mdl-navigation__link:hover {
+  color: var(--primary-color-dark);
+}
+
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
+  color: var(--font-color-dark);
+}
+
+.mdl-layout__drawer {
+  background: var(--primary-color-light);
+}
+
+.mdl-list__item-text-body {
+  min-width: 200px;
+  overflow: auto;
+}

@@ -1,0 +1,48 @@
+{{define "content"}}
+
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--no-desktop-drawer-button mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="main-color mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">RTMPi</span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <a class="{{if eq .Page "Status"}}color-accent{{else}}color-font-dark{{end}} mdl-button mdl-js-button mdl-js-ripple-effect" href="/dashboard/status">STATUS</a>
+        <a class="{{if eq .Page "Network"}}color-accent{{else}}color-font-dark{{end}} mdl-button mdl-js-button mdl-js-ripple-effect" href="/dashboard/network">NETWORK</a>
+        <a class="{{if eq .Page "Player"}}color-accent{{else}}color-font-dark{{end}} mdl-button mdl-js-button mdl-js-ripple-effect" href="/dashboard/player">PLAYER</a>
+        <a class="{{if eq .Page "Password"}}color-accent{{else}}color-font-dark{{end}} mdl-button mdl-js-button mdl-js-ripple-effect" href="/dashboard/password">PASSWORD</a>
+      </nav>
+
+      <a class="mdl-button mdl-js-button mdl-button--icon" href="/logout">
+        <i class="material-icons">logout</i>
+      </a>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">RTMPi</span>
+    <nav class="mdl-navigation">
+      <a class="{{if eq .Page "Status"}}selected-color{{end}} mdl-navigation__link" href="/dashboard/status">STATUS</a>
+      <a class="{{if eq .Page "Network"}}selected-color{{end}} mdl-navigation__link" href="/dashboard/network">NETWORK</a>
+      <a class="{{if eq .Page "Player"}}selected-color{{end}} mdl-navigation__link" href="/dashboard/player">PLAYER</a>
+      <a class="{{if eq .Page "Password"}}selected-color{{end}} mdl-navigation__link" href="/dashboard/password">PASSWORD</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+      {{if eq .Page "Status"}}
+          {{template "status" .}}
+      {{else if eq .Page "Network"}}
+          {{template "network" .}}
+      {{else if eq .Page "Player"}}
+          {{template "player" .}}
+      {{else if eq .Page "Password"}}
+          {{template "password" .}}
+      {{end}}
+    </div>
+  </main>
+</div>
+
+{{end}}

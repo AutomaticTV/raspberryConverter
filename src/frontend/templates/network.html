@@ -1,0 +1,214 @@
+{{define "network"}}
+
+<div class="mdl-grid">
+   <div class="mdl-cell mdl-cell--6-col">
+      <!-- Card -->
+      <div class='demo-card-wide mdl-card mdl-shadow--6dp'>
+         <form class='form'  method="post" action="">
+            <!-- Card body -->
+            <ul class="mdl-list">
+               <!-- Mode: DHCP (default) / Static IP -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Network mode: </div>
+                     <div class="mdl-list__item-text-body">
+                        Choose between DHCP (default) or Static IP. Note that if you chose static IP, you will have to manually fill the other fields (otherwise they are filled automatically).
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-selectfield mdl-js-selectfield">
+                        <select class="mdl-selectfield__select" id="Mode" name="Mode" oninput="onModeChange(this.value)" initialValueHack="{{.Mode}}">
+                           <option value="DHCP">DHCP</option>
+                           <option value="Static">Static IP</option>
+                        </select>
+                     </div>
+                  </div>
+               </li>
+               <!-- IP address: (not editable in DHCP) -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">IP address: </div>
+                     <div class="mdl-list__item-text-body">
+                        IP address of the device, should be something like: '192.168.1.47'.1
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield" id="IPInput">
+                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="IP" name="IP" value="{{.IP}}">
+                        <div class="mdl-textfield__error">Invalid format</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- Netmask: (not editable in DHCP) -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Netmask: </div>
+                     <div class="mdl-list__item-text-body">
+                        Netmask of the device, should be something like: '255.255.255.0'.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield" id="NetmaskInput">
+                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Netmask" name="Netmask" value="{{.Netmask}}">
+                        <div class="mdl-textfield__error">Invalid format</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- Gateway: (not editable in DHCP) -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">Gateway: </div>
+                     <div class="mdl-list__item-text-body">
+                        Gateway IP address of the device, should be something like: '192.168.1.1'.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield" id="GatewayInput">
+                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Gateway" name="Gateway" value="{{.Gateway}}">
+                        <div class="mdl-textfield__error">Invalid format</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- DNS1:  -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">DNS 1: </div>
+                     <div class="mdl-list__item-text-body">
+                        DNS provider, should be something like: '8.8.8.8'.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield" id="DNS1Input">
+                        <input class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS1" name="DNS1" value="{{.DNS1}}">
+                        <div class="mdl-textfield__error">Invalid format</div>
+                     </div>
+                  </div>
+               </li>
+               <!-- DNS2:  -->
+               <li class="mdl-list__item mdl-list__item--three-line">
+                  <div class="mdl-list__item-primary-content">
+                     <div class="color-accent mdl-color-text">DNS 2: </div>
+                     <div class="mdl-list__item-text-body">
+                        DNS provider, should be something like: '8.8.8.8'.
+                     </div>
+                  </div>
+                  <div class="mdl-list__item-secondary-content">
+                     <div class="mdl-textfield mdl-js-textfield" id="DNS2Input">
+                        <input {{if eq .Mode "Status"}}disabled{{end}} class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS2" name="DNS2" value="{{.DNS2}}">
+                        <div class="mdl-textfield__error">Invalid format</div>
+                     </div>
+                  </div>
+               </li>
+               {{if .NetworkError}}
+               <li class="mdl-list__item">
+                  <p style="color:red">{{.NetworkErrorMessage}}</p>
+               </li>
+               {{end}}
+            </ul>
+            <!-- Card foot -->
+            <div class="mdl-card__actions mdl-card--border">
+               <!-- Update button -->
+               <input type="submit" class="main-color mdl-button mdl-js-button mdl-button--raised" value="Update {{.Page}}" name="Update{{.Page}}">
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+<script type="text/javascript">
+   const IPI = document.getElementById("IPInput");
+   const IP = document.getElementById("IP");
+   var IPDHCP = "";
+   var IPStatic = "";
+
+   const GatewayI = document.getElementById("GatewayInput");
+   const Gateway = document.getElementById("Gateway");
+   var GatewayDHCP = "";
+   var GatewayStatic = "";
+
+   const NetmaskI = document.getElementById("NetmaskInput");
+   const Netmask = document.getElementById("Netmask");
+   var NetmaskDHCP = "";
+   var NetmaskStatic = "";
+
+   const DNS1I = document.getElementById("DNS1Input");
+   const DNS1 = document.getElementById("DNS1");
+   var DNS1DHCP = "";
+   var DNS1Static = "";
+
+   const DNS2I = document.getElementById("DNS2Input");
+   const DNS2 = document.getElementById("DNS2");
+   var DNS2DHCP = "";
+   var DNS2Static = "";
+
+   document.addEventListener("DOMContentLoaded", function(event) {
+   	var initialMode = document.getElementById("Mode").getAttribute("initialValueHack");
+   	document.getElementById("Mode").value = initialMode;
+    if (initialMode === "DHCP") {
+      IPDHCP = IP.value;
+      GatewayDHCP = Gateway.value;
+      NetmaskDHCP = Netmask.value;
+      DNS1DHCP = DNS1.value;
+      DNS2DHCP = DNS2.value;
+    } else {
+      IPStatic = IP.value;
+      GatewayStatic = Gateway.value;
+      NetmaskStatic = Netmask.value;
+      DNS1Static = DNS1.value;
+      DNS2Static = DNS2.value;
+    }
+   	onModeChange(initialMode);
+   });
+
+   function onModeChange(newValue){
+   	try {
+   		newValue === "DHCP"? disable() : enable();
+      IPI.MaterialTextfield.checkDirty();
+      GatewayI.MaterialTextfield.checkDirty();
+      NetmaskI.MaterialTextfield.checkDirty();
+      DNS1I.MaterialTextfield.checkDirty();
+      DNS2I.MaterialTextfield.checkDirty();
+   	} catch (e) {
+   		setTimeout(() => onModeChange(newValue), 100);
+   	}
+   }
+
+   function disable(){
+    IPStatic = IP.value;
+    IP.value = IPDHCP;
+    IPI.MaterialTextfield.disable();
+
+    GatewayStatic = Gateway.value;
+    Gateway.value = GatewayDHCP;
+    GatewayI.MaterialTextfield.disable();
+
+    NetmaskStatic = Netmask.value;
+    Netmask.value = NetmaskDHCP;
+    NetmaskI.MaterialTextfield.disable();
+
+    DNS1Static = DNS1.value;
+    DNS1.value = DNS1DHCP;
+    DNS1I.MaterialTextfield.disable();
+
+    DNS2Static = DNS2.value;
+    DNS2.value = DNS2DHCP;
+    DNS2I.MaterialTextfield.disable();
+   }
+
+   function enable(){
+    IP.value = IPStatic;
+    IPI.MaterialTextfield.enable();
+
+    Gateway.value = GatewayStatic;
+    GatewayI.MaterialTextfield.enable();
+
+    Netmask.value = NetmaskStatic;
+    NetmaskI.MaterialTextfield.enable();
+
+    DNS1.value = DNS1Static;
+    DNS1I.MaterialTextfield.enable();
+
+    DNS2.value = DNS2Static;
+    DNS2I.MaterialTextfield.enable();
+   }
+</script>
+{{end}}
