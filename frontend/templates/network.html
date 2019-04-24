@@ -103,6 +103,10 @@
                <li class="mdl-list__item">
                   <p style="color:red">{{.ErrorMessage}}</p>
                </li>
+               {{else if .Success}}
+               <li class="mdl-list__item">
+                  <p style="color:green">{{.SuccessMessage}}</p>
+               </li>
                {{end}}
             </ul>
             <!-- Card foot -->

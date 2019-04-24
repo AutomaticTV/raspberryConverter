@@ -38,15 +38,20 @@ import (
            conditions["PlayerErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
         // UPDATE NETWORK
          } else if r.FormValue("UpdateNetwork") != "" {
-           fmt.Println("Updating network:")
-           fmt.Println("Mode", r.FormValue("Mode"))
-           fmt.Println("IP", r.FormValue("IP"))
-           fmt.Println("Gateway", r.FormValue("Gateway"))
-           fmt.Println("Netmask", r.FormValue("Netmask"))
-           fmt.Println("DNS1", r.FormValue("DNS1"))
-           fmt.Println("DNS2", r.FormValue("DNS2"))
-           conditions["NetworkError"] = true
-           conditions["NetworkErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
+           err := services.SetNetworkConfig(services.Network{
+             r.FormValue("Mode"),
+             r.FormValue("IP"),
+             r.FormValue("Gateway"),
+             r.FormValue("Netmask"),
+             r.FormValue("DNS1"),
+             r.FormValue("DNS2"),
+           })
+           if err != nil {
+             fmt.Println(err)
+             AddError("Error updating network setings", conditions)
+           } else {
+             AddSuccess("Network setings updated successfuly", conditions)
+           }
         // UPDATE PASSWORD
          } else if r.FormValue("UpdatePassword") != "" {
            err := services.UpdatePassword(

@@ -10,7 +10,7 @@ TBD
 ## Development
 
 ### Raspberry set up
-The project is meant to work under [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/), if you are using another OS, flash and sd card with this system. If you already are using Stretch Lite, you may have to tweak some of the following steps according to your set up.
+The project is meant to work under a fresh [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/) installation.
 
 * Install git: `sudo apt-get update && sudo apt-get install git -y`
 * Clone this repo and cd into it: `cd ~ && git clone https://github.com/AutomaticTV/raspberryConverter.git && cd raspberryConverter`
