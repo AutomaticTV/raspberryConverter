@@ -1,7 +1,8 @@
-package main
+package services
+
 import (
   "github.com/gorilla/sessions"
-  "app/storage"
+  "raspberryConverter/storage"
   "golang.org/x/crypto/bcrypt"
   "fmt"
   "net/http"

@@ -5,15 +5,17 @@ import (
        "net/http"
        "fmt"
        "reflect"
-       "app/frontend"
-			 "app/storage"
+       "raspberryConverter/services"
+       "raspberryConverter/frontend"
+			 "raspberryConverter/storage"
+       "github.com/gobuffalo/packr"
  )
 
 
  func DashboardHandler(w http.ResponseWriter, r *http.Request) {
         conditions := map[string]interface{}{}
         // IF NOT LOGGED IN, GO TO LOGIN PAGE
-         if !IsLoggedIn(r) {
+         if !services.IsLoggedIn(r) {
            http.Redirect(w, r, "/login", http.StatusFound)
            return
          }
@@ -44,7 +46,7 @@ import (
            conditions["NetworkError"] = true
            conditions["NetworkErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
          } else if r.FormValue("UpdatePassword") != "" {
-           err := UpdatePassword(
+           err := services.UpdatePassword(
              r.FormValue("Username"),
              r.FormValue("OldPassword"),
              r.FormValue("NewPassword"),
@@ -120,7 +122,7 @@ import (
          conditions := map[string]interface{}{}
 
          // ALREADY LOGGED IN? Go to dashboard
-         if IsLoggedIn(r) {
+         if services.IsLoggedIn(r) {
            http.Redirect(w, r, "/dashboard", http.StatusFound)
            return
          }
@@ -130,9 +132,9 @@ import (
                  username := r.FormValue("Username")
                  password := r.FormValue("Password")
                  // PASSWORD CORRECT, GO TO DASHBOARD
-								 if PasswordIsCorrect(username, password) {
+								 if services.PasswordIsCorrect(username, password) {
                          conditions["LoginError"] = false
-                         err := Login(w, r, username)
+                         err := services.Login(w, r, username)
                          if err != nil {
                            conditions["LoginError"] = true
                          }
@@ -151,7 +153,7 @@ import (
  }
 
  func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-         err := Logout(w, r)
+         err := services.Logout(w, r)
          if err != nil {
                  log.Println(err)
          }
@@ -160,10 +162,11 @@ import (
  }
 
  func main() {
+         staticFiles := packr.NewBox("frontend/static")
          storage.InitStorage()
          fmt.Println("Server starting, point your browser to localhost:80/login to start")
 				 // ENDPOINTS
-         http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("frontend/static"))))
+         http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(staticFiles)))
          http.HandleFunc("/", LoginHandler)
          http.HandleFunc("/login", LoginHandler)
 				 http.HandleFunc("/logout", LogoutHandler)

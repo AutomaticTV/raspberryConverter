@@ -1,14 +1,18 @@
 FROM golang:1.12.4-alpine
-WORKDIR /go/src/app
+WORKDIR /go/src/raspberryConverter
+
 # Install dependencies
-RUN apk add --no-cache gcc musl-dev git && go get \
-github.com/gorilla/sessions \
-golang.org/x/crypto/bcrypt \
-github.com/jinzhu/gorm \
-github.com/jinzhu/gorm/dialects/sqlite
-# TODO: run a script with 3 options:
-#       serve: the current one. (default)
-#       test: ?
-#       pack: create binary using https://github.com/gobuffalo/packr => export to a release folder (docker volume)
-COPY src .
+COPY goDeps.sh .
+RUN apk add --no-cache gcc musl-dev git && sh goDeps.sh && rm goDeps.sh
+
+# Create the app
+COPY frontend ./frontend
+COPY storage ./storage
+COPY services ./services
+COPY main.go ./
+# RUN
 CMD ["go", "run", "."]
+# COMPILE
+# RUN CGO_ENABLED=0 && GOOS=linux && GOARCH=amd64 && go build -a -o /raspberryConverter . && chmod +x /raspberryConverter
+# Run the binary
+# CMD ["/raspberryConverter"]
