@@ -30,10 +30,10 @@ If you just want to test/develop the web part, the server can be run in any mach
 
 * clone the project and go to the folder
 * build the project: `docker build -t raspberryconverter .`
-* run the server: `docker run --name raspberryconvertertest --rm -p XX:80 raspberryconverter &` where XX is a port free on your local machine.
+* run the server: `docker run --name raspberryconvertertest --rm -p XX:5555 raspberryconverter &` where XX is a port free on your local machine.
 * connect to the server: on your browser go to `http://localhost:XX`
 * to stop the server once you're done: `docker kill raspberryconvertertest`
-* single command of the above: `docker kill raspberryconvertertest & docker build -t raspberryconverter . && docker run --name raspberryconvertertest --rm -p 80:80 raspberryconverter &`
+* single command of the above: `docker kill raspberryconvertertest & docker build -t raspberryconverter . && docker run --name raspberryconvertertest --rm -p XX:5555 raspberryconverter &`
 
 
 ## Technologies used

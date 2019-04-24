@@ -18,11 +18,9 @@ func InitStorage() {
   db.AutoMigrate(&User{})
   db.AutoMigrate(&Status{})
   db.AutoMigrate(&Player{})
-  db.AutoMigrate(&Network{})
 
   // set default values (if needed!)
   createDefaultUser()
   createDefaultStatus()
   createDefaultPlayer()
-  createDefaultNetwork()
 }

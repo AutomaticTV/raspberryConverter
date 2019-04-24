@@ -3,7 +3,6 @@ package template
 import (
   "html/template"
   "github.com/gobuffalo/packr"
-  "fmt"
 )
 
 var box = packr.NewBox("./templates")
@@ -24,6 +23,5 @@ var Login = template.Must(template.New("Login").Parse(
 
 func getTemplate(name string) string {
   temp, _ := box.FindString(name)
-  fmt.Println(temp)
   return temp
 }

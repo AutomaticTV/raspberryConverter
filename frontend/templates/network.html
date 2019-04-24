@@ -181,27 +181,27 @@
     IPStatic = IP.value;
     IP.value = IPDHCP;
     IPI.MaterialTextfield.disable();
-    IP.setAttribute("pattern", ".");
+    IP.removeAttribute("pattern");
 
     GatewayStatic = Gateway.value;
     Gateway.value = GatewayDHCP;
     GatewayI.MaterialTextfield.disable();
-    Gateway.setAttribute("pattern", ".");
+    Gateway.removeAttribute("pattern");
 
     NetmaskStatic = Netmask.value;
     Netmask.value = NetmaskDHCP;
     NetmaskI.MaterialTextfield.disable();
-    Netmask.setAttribute("pattern", ".");
+    Netmask.removeAttribute("pattern");
 
     DNS1Static = DNS1.value;
     DNS1.value = DNS1DHCP;
     DNS1I.MaterialTextfield.disable();
-    DNS1.setAttribute("pattern", ".");
+    DNS1.removeAttribute("pattern");
 
     DNS2Static = DNS2.value;
     DNS2.value = DNS2DHCP;
     DNS2I.MaterialTextfield.disable();
-    DNS2.setAttribute("pattern", ".");
+    DNS2.removeAttribute("pattern");
    }
 
    function enable(){

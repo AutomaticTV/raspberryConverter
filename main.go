@@ -22,6 +22,7 @@ import (
          // CHECK IF THE REQUEST INCLUDES A FORM
          if r.FormValue("UpdateStatus") != "" {
 
+        // UPDATE PLAYER CONFIG
          } else if r.FormValue("UpdatePlayer") != "" {
            fmt.Println("Updating player:")
            fmt.Println("Video", r.FormValue("Video"))
@@ -35,6 +36,7 @@ import (
            fmt.Println("Autoplay", r.FormValue("Autoplay"))
            conditions["PlayerError"] = true
            conditions["PlayerErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
+        // UPDATE NETWORK
          } else if r.FormValue("UpdateNetwork") != "" {
            fmt.Println("Updating network:")
            fmt.Println("Mode", r.FormValue("Mode"))
@@ -45,6 +47,7 @@ import (
            fmt.Println("DNS2", r.FormValue("DNS2"))
            conditions["NetworkError"] = true
            conditions["NetworkErrorMessage"] = "CUSTOM VALIDATION MEASSAGE"
+        // UPDATE PASSWORD
          } else if r.FormValue("UpdatePassword") != "" {
            err := services.UpdatePassword(
              r.FormValue("Username"),
@@ -67,7 +70,7 @@ import (
          case "/dashboard/player":
            SetConditions(storage.GetPlayer, "Player", conditions, "Unable to retrieve last player setings.")
          case "/dashboard/network":
-           SetConditions(storage.GetNetwork, "Network", conditions, "Unable to retrieve last network setings.")
+           SetConditions(services.GetNetworkConfig, "Network", conditions, "Unable to retrieve last network setings.")
          case "/dashboard/password":
            conditions["Page"] = "Password"
          default:
@@ -171,5 +174,5 @@ import (
          http.HandleFunc("/login", LoginHandler)
 				 http.HandleFunc("/logout", LogoutHandler)
          http.HandleFunc("/dashboard/", DashboardHandler)
-         http.ListenAndServe(":80", nil)
+         http.ListenAndServe(":5555", nil)
  }

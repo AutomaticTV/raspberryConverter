@@ -18,7 +18,7 @@ type Player struct {
   Autoplay string
 }
 
-func GetPlayer () (interface{}, error) {
+func GetPlayer() (interface{}, error) {
   // connect to db
   db, err := gorm.Open("sqlite3", "gorm.db")
   var player Player
