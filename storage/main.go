@@ -16,11 +16,9 @@ func InitStorage() {
 
   // DB table creation / migration
   db.AutoMigrate(&User{})
-  db.AutoMigrate(&Status{})
   db.AutoMigrate(&Player{})
 
   // set default values (if needed!)
   createDefaultUser()
-  createDefaultStatus()
   createDefaultPlayer()
 }

@@ -71,7 +71,7 @@ import (
          // SET CONDITIONS TO FILL TEMPLATE IF REQUIRED AFTER FORM
          switch r.URL.Path {
          case "/dashboard/status":
-           SetConditions(storage.GetStatus, "Status", conditions, "Unable to retrieve last status.")
+           SetConditions(services.GetStatus, "Status", conditions, "Unable to retrieve last status.")
          case "/dashboard/player":
            SetConditions(storage.GetPlayer, "Player", conditions, "Unable to retrieve last player setings.")
          case "/dashboard/network":
