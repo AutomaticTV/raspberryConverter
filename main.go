@@ -50,7 +50,7 @@ import (
              fmt.Println(err)
              AddError("Error updating network setings", conditions)
            } else {
-             AddSuccess("Network setings updated successfuly", conditions)
+             AddSuccess("Network setings updated successfuly. You may have to reboot the device to make the changes efective and see it reflected on the page information.", conditions)
            }
         // UPDATE PASSWORD
          } else if r.FormValue("UpdatePassword") != "" {

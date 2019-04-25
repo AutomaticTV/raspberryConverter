@@ -6,6 +6,7 @@ import (
   "fmt"
   "bytes"
   "strings"
+  "strconv"
   "errors"
   "regexp"
   "html/template"
@@ -14,8 +15,8 @@ import (
 type Network struct {
   Mode string
   IP string
-  Netmask string
   Gateway string
+  Netmask string
   DNS1 string
   DNS2 string
 }
@@ -34,6 +35,7 @@ interface eth0
 static ip_address={{.IP}}/{{.Mask}}
 static routers={{.Gateway}}
 static domain_name_servers={{.DNSs}}
+fallback static_eth0
 `))
 
 
@@ -48,7 +50,7 @@ func SetNetworkConfig(config Network) error {
   var buff bytes.Buffer
   if err := staticTemplate.Execute(&buff, templateData{
     config.IP,
-    MaskToIp(config.Netmask),
+    strconv.Itoa(MaskToIp(config.Netmask)),
     config.Gateway,
     config.DNS1 + " " + config.DNS2,
   }); err != nil {
@@ -135,31 +137,31 @@ func setNetConfigFile(content string) error {
   return ioutil.WriteFile("/etc/dhcpcd.conf", []byte(content), 664)
 }
 
-func MaskToIp(ip string) string {
+func MaskToIp(ip string) int {
   ret := 0
   chunks := strings.Split(ip, ".")
   for _, element := range chunks {
     if element == "0" {
-      return string(ret)
+      return ret
     } else if element == "255" {
       ret += 8
     } else if element == "254" {
-      return string(ret + 7)
+      return ret + 7
     } else if element == "252" {
-      return string(ret + 6)
+      return ret + 6
     } else if element == "248" {
-      return string(ret + 5)
+      return ret + 5
     } else if element == "240" {
-      return string(ret + 4)
+      return ret + 4
     } else if element == "224" {
-      return string(ret + 3)
+      return ret + 3
     } else if element == "192" {
-      return string(ret + 2)
+      return ret + 2
     } else if element == "128" {
-      return string(ret + 1)
-    } else { return "24"}
+      return ret + 1
+    } else { return 24}
   }
-  return string(ret)
+  return ret
 }
 
 func isDHCP(config string) bool {
@@ -171,5 +173,5 @@ func removeStaticConfig(config string) string {
 }
 
 func resetNetwork() error {
-  return exec.Command("systemctl", "restart dhcpcd").Run()
+  return exec.Command("/bin/sh", "-c", "sudo systemctl daemon-reload && sudo systemctl restart dhcpcd").Run()
 }
