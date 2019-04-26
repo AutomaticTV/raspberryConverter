@@ -18,6 +18,7 @@ The project is meant to work under a fresh [Raspbian Stretch Lite](https://www.r
 * Reboot: `sudo reboot`
 * Check that go is installed: `go version` should output `go version go1.12.4 linux/arm`
 * Check gopath: `echo $GOPATH` should output `/home/pi/go`
+* Check omxplayer: `omxplayer -v` should output `omxplayer - Commandline multimedia player for the Raspberry Pi (...)`
 * Move the code to your gopath and cd into it: `mv ~/raspberryConverter $GOPATH/src/ && cd $GOPATH/src/`
 * Install go packages: `sh goDeps.sh`
 * Run the project: `go run ./raspberryConverter`

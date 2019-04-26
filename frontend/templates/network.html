@@ -17,7 +17,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-selectfield mdl-js-selectfield">
-                        <select class="mdl-selectfield__select" id="Mode" name="Mode" oninput="onModeChange(this.value)" initialValueHack="{{.Mode}}">
+                        <select class="mdl-selectfield__select" id="Mode" name="Mode" oninput="onModeChange(this.value)" initialValueHack="{{.Data.Mode}}">
                            <option value="DHCP">DHCP</option>
                            <option value="Static">Static IP</option>
                         </select>
@@ -34,7 +34,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="IPInput">
-                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="IP" name="IP" value="{{.IP}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="IP" name="IP" value="{{.Data.IP}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -49,7 +49,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="NetmaskInput">
-                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Netmask" name="Netmask" value="{{.Netmask}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Netmask" name="Netmask" value="{{.Data.Netmask}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -64,7 +64,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="GatewayInput">
-                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Gateway" name="Gateway" value="{{.Gateway}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="Gateway" name="Gateway" value="{{.Data.Gateway}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -79,7 +79,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="DNS1Input">
-                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS1" name="DNS1" value="{{.DNS1}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS1" name="DNS1" value="{{.Data.DNS1}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -94,7 +94,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield" id="DNS2Input">
-                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS2" name="DNS2" value="{{.DNS2}}">
+                        <input required class="mdl-textfield__input" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" type="text" id="DNS2" name="DNS2" value="{{.Data.DNS2}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>

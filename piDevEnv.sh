@@ -5,3 +5,4 @@ export GOPATH=$HOME/go
 export PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
 EOF
 source ~/.bashrc
+sudo apt-get install omxplayer -y

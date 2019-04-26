@@ -23,7 +23,7 @@
       </div>
 
       <!-- Error message -->
-      {{if .LoginError}}<p style="color:red">Incorrect username or password. The default username is admin, same for password.</p>{{end}}
+      {{if .Error}}<p style="color:red">{{.ErrorMessage}}</p>{{end}}
 
       <!-- Card foot -->
       <div class="mdl-card__actions mdl-card--border">

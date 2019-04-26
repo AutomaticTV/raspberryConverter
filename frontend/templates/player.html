@@ -17,7 +17,7 @@
                    </div>
                    <div class="mdl-list__item-secondary-content">
                       <div class="mdl-selectfield mdl-js-selectfield">
-                         <select class="mdl-selectfield__select" id="Video" name="Video" initialValueHackVideo="{{.Video}}">
+                         <select class="mdl-selectfield__select" id="Video" name="Video" initialValueHackVideo="{{.Data.Video}}">
                             <option value="480i59.94">480i59.94 (4/3)</option>
                             <option value="480i59.94">480i59.94 (16/9)</option>
                             <option value="576i50">576i50 (4/3)</option>
@@ -42,7 +42,7 @@
                    </div>
                    <div class="mdl-list__item-secondary-content">
                       <div class="mdl-selectfield mdl-js-selectfield">
-                         <select class="mdl-selectfield__select" id="AudioDecoding" name="AudioDecoding" initialValueHackAudioDecoding="{{.AudioDecoding}}">
+                         <select class="mdl-selectfield__select" id="AudioDecoding" name="AudioDecoding" initialValueHackAudioDecoding="{{.Data.AudioDecoding}}">
                             <option value="Hardware">Hardware</option>
                             <option value="Software">Software</option>
                          </select>
@@ -59,7 +59,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield">
-                        <input required class="mdl-textfield__input" pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})" type="text" id="URL" name="URL" value="{{.URL}}">
+                        <input required class="mdl-textfield__input" pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})" type="text" id="URL" name="URL" value="{{.Data.URL}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
@@ -74,7 +74,7 @@
                    </div>
                    <div class="mdl-list__item-secondary-content">
                       <div class="mdl-selectfield mdl-js-selectfield">
-                         <select class="mdl-selectfield__select" id="Transport" name="Transport" initialValueHackTransport="{{.Transport}}">
+                         <select class="mdl-selectfield__select" id="Transport" name="Transport" initialValueHackTransport="{{.Data.Transport}}">
                             <option value="TCP">TCP</option>
                             <option value="UDP">UDP</option>
                             <option value="HTTP">HTTP</option>
@@ -92,7 +92,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield">
-                        <input required class="mdl-textfield__input" pattern="([1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[12][0-9]{4}|30000)" type="text" id="Buffer" name="Buffer" value="{{.Buffer}}">
+                        <input required class="mdl-textfield__input" pattern="([1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[12][0-9]{4}|30000)" type="text" id="Buffer" name="Buffer" value="{{.Data.Buffer}}">
                         <div class="mdl-textfield__error">Must be a number, min: 100 max: 30000</div>
                      </div>
                   </div>
@@ -107,7 +107,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="Username" name="Username" value="{{.Username}}">
+                        <input class="mdl-textfield__input" type="text" id="Username" name="Username" value="{{.Data.Username}}">
                      </div>
                   </div>
                </li>
@@ -121,7 +121,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="password" id="Password" name="Password" value="{{.Password}}">
+                        <input class="mdl-textfield__input" type="password" id="Password" name="Password" value="{{.Data.Password}}">
                      </div>
                   </div>
                </li>
@@ -135,7 +135,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield">
-                        <input required class="mdl-textfield__input" pattern="([0-9]|[1-8][0-9]|9[0-9]|100)" type="text" id="Volume" name="Volume" value="{{.Volume}}">
+                        <input required class="mdl-textfield__input" pattern="([0-9]|[1-8][0-9]|9[0-9]|100)" type="text" id="Volume" name="Volume" value="{{.Data.Volume}}">
                         <div class="mdl-textfield__error">Must be a number, min: 0 max: 100</div>
                      </div>
                   </div>
@@ -150,7 +150,7 @@
                    </div>
                    <div class="mdl-list__item-secondary-content">
                       <div class="mdl-selectfield mdl-js-selectfield">
-                         <select class="mdl-selectfield__select" id="Autoplay" name="Autoplay" initialValueHackAutoplay="{{.Autoplay}}">
+                         <select class="mdl-selectfield__select" id="Autoplay" name="Autoplay" initialValueHackAutoplay="{{.Data.Autoplay}}">
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                          </select>
@@ -162,6 +162,11 @@
                   <p style="color:red">{{.ErrorMessage}}</p>
                </li>
                {{end}}
+              {{if .Success}}
+              <li class="mdl-list__item">
+                 <p style="color:green">{{.SuccessMessage}}</p>
+              </li>
+              {{end}}
             </ul>
             <!-- Card foot -->
             <div class="mdl-card__actions mdl-card--border">
