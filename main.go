@@ -29,16 +29,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	isUpdate, requestError := requestHandler(w, r)
 
 	// RETURN THE APROPIATE FRONTEND PAGE ACCORDING TO THE PATH
-	fmt.Println(r.URL.Path)
 	switch r.URL.Path {
 	case "/login":
-		fmt.Println("login1")
 		if requestError == nil && isUpdate {
-			fmt.Println("login2")
 			http.Redirect(w, r, "/dashboard", http.StatusFound)
 			return
 		}
-		fmt.Println("login3")
 		err := frontend.Login(isUpdate, requestError, w)
 		if err != nil {
 			http.Redirect(w, r, "/static/error.html", http.StatusFound)
@@ -55,7 +51,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		config, err := player.GetConfig()
 		err = frontend.Player(isUpdate, config, combineErrors(requestError, err), w)
 		if err != nil {
-			fmt.Println(err)
 			http.Redirect(w, r, "/static/error.html", http.StatusFound)
 		}
 		return
@@ -88,12 +83,22 @@ func requestHandler(w http.ResponseWriter, r *http.Request) (bool, error) {
 		if auth.PasswordIsCorrect(username, password) {
 			return true, auth.Login(w, r, username)
 		}
-		// PASSWORD ERROR, ADD ERROR MESSAGE TO TEMPLATE
 		return true, errors.New("Wrong username or password")
 	}
 	// PLAY
-	if r.FormValue("Play") != "" {
-		return true, player.Play()
+	if r.FormValue("Start") != "" {
+		player.Start()
+		return true, nil
+	}
+	// RESTART
+	if r.FormValue("Restart") != "" {
+		player.Restart()
+		return true, nil
+	}
+	// STOP
+	if r.FormValue("Stop") != "" {
+		player.Stop()
+		return true, nil
 	}
 	// UPDATE PLAYER CONFIG
 	if r.FormValue("UpdatePlayer") != "" {
@@ -168,7 +173,7 @@ func main() {
 	staticFiles := packr.NewBox("frontend/static")
 	player.Init()
 	auth.Init()
-	fmt.Println("Server starting, point your browser to localhost" + port + "/login to start")
+	fmt.Println("Server starting, point your browser to localhost" + port + " to start")
 	// ENDPOINTS
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(staticFiles)))
 	http.HandleFunc("/", handler)
