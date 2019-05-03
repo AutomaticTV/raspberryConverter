@@ -1,227 +1,219 @@
-// INSPIRATION:  https://github.com/dplesca/go-omxremote
-
 package player
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
-	"html/template"
+	"image"
+	"os"
 	"os/exec"
-	"sync"
+	"raspberryConverter/services/network"
+	"regexp"
+	"strconv"
+
+	"github.com/fogleman/gg"
 )
 
-// status is a struct used for string constants that represent the state of the player
-type status struct {
-	NotInit, Playing, Paused, IP string
-}
-
-// player is the struct that controls the playback on the omxplayer
-// using an exec.Cmd command
-type player struct {
-	State   string
-	Command *exec.Cmd
-	mu      sync.Mutex
-}
-
-// killBlocker is a struct used to prevent killing twice the same process
-type killBlocker struct {
-	waitingToDie bool
-	mu           sync.Mutex
-}
-
-// playPriority is a struct used to prevent displaying IP to happen when there is a request for play pending
-type playPriority struct {
-	waitingToPlay bool
-	mu            sync.Mutex
-}
-
-// Possible values for p.State
-const playing = "Playing"
-const paused = "Paused"
-const runningNothing = "Nothing running"
-const displayingIP = "Displaying IP"
-
-// Channel used to controll the player asyncronously and possible values for the actionChannel messages
-var actionChannel = make(chan string)
-
-const startAction = "Start"
-const stopAction = "Stop"
-const restartAction = "Reset"
-const errorAction = "Error"
-const doneAction = "Finish"
-
-// Init is a function that initializes the player, and the storage
-func Init() {
-	initStorage()
-	go playerController()
-}
-
-// Start is a function that plays RTMP streaming according to stored config
-// if the player is already streaming this function has no effect.
-func Start() {
-	actionChannel <- startAction
-}
-
-// Restart is a function that plays RTMP streaming according to stored config
-// if the player is already streaming it will be stopped before playing as described.
-func Restart() {
-	actionChannel <- startAction
-}
-
-// Stop is a function that terminate the streaming video process, and switch to displaying IP
-func Stop() {
-	actionChannel <- stopAction
-}
-
-// playerController is a function that acts as a concurrency controller fot the player,
-// it gets messages from the actionChannel, triggered either by the importer of the package (startAction || restartAction || stopAction) or by other actions (doneAction || errorAction).
-func playerController() {
-	p := player{State: runningNothing}
-	pp := playPriority{waitingToPlay: false}
-	k := killBlocker{waitingToDie: false}
-	// Chose next action to be done
-	doAction := func(action string) {
-		switch action {
-		case startAction:
-			start(&p, &k, &pp)
-		case restartAction:
-			restart(&p, &k, &pp)
-		case stopAction:
-			killRuningProcess(&p, &k)
-			displayIP(&p, &pp)
-		case doneAction:
-			k.waitingToDie = false
-			displayIP(&p, &pp)
-		case errorAction:
-			k.waitingToDie = false
-			displayIP(&p, &pp)
-		default:
-			displayIP(&p, &pp)
+// playerLoop is a function that executes commands syncronously in a infinit loop.
+// The commands to be executed are set by playerController
+func playerLoop(p *player, k *killing) {
+	// TODO: killall fbi when playing, black background in transitions
+	var failCounter int
+	const failLimit = 10
+	for {
+		p.state = p.nextState
+		cmd := getNextCommand(p.nextState)
+		p.command = exec.Command("/bin/sh", "-c", cmd)
+		var err error
+		p.pipeIn, err = p.command.StdinPipe()
+		if err != nil {
+			fmt.Println(err)
+		}
+		// Set new state, run the command then set runing nothing state
+		fmt.Println("Player: executing command START: ", cmd)
+		msg, err := p.command.CombinedOutput()
+		p.state = runningNothing
+		k.mu.Lock()
+		k.inProgress = false
+		k.mu.Unlock()
+		// Logs
+		if err != nil {
+			failCounter++
+			fmt.Println("The command: '", cmd, "', has finished with error: ", string(msg), err)
+			if failCounter > failLimit {
+				fmt.Println("Too many consecutive failures, trying to restart the player")
+				channel <- errorMsg
+				return
+			}
+		} else {
+			failCounter = 0
+			channel <- doneMsg
+			fmt.Println("Player: executing command END: ", cmd)
 		}
 	}
-
-	// Initialize the process with default action
-	go doAction("")
-	// Endless loop!
-	for {
-		// wait for new actions
-		action := <-actionChannel
-		// execute the action asyncronously
-		go doAction(action)
-	}
-
 }
 
-// VOLUME = -o hdmi --vol [-6000:0]
-type playerTemplateData struct {
-	Volume int // [-6000:0]
-	URL    string
-}
-
-// play is a function that starts the stream with the stored setings
-func start(p *player, k *killBlocker, pp *playPriority) {
-	// IF ALREADY PLAYING RETURN
-	if p.State == playing || pp.waitingToPlay {
-		fmt.Println("Already playing")
-		return
+func getNextCommand(nextState string) string {
+	const survivalCommand = "sleep 10"
+	var cmd string
+	var err error
+	switch nextState {
+	case playing:
+		cmd, err = getPlayCommand()
+	default:
+		cmd, err = getDisplayCommand()
 	}
-	// KILL ANY RUNNING PROCESS, AND INDICATE THAT WE'VE A PLAY REQUEST PENDING
-	pp.mu.Lock()
-	defer pp.mu.Unlock()
-	pp.waitingToPlay = true
-	killRuningProcess(p, k)
-	// GET PLAYER CONFIG
-	setings, err := GetConfig()
 	if err != nil {
-		fmt.Println("Error geting config from storage: ", err)
-		actionChannel <- errorAction
-		return
+		fmt.Println("!!Error while trying to get next command in order to achieve the next state: ", nextState, ":")
+		fmt.Println(err)
+	}
+	if cmd == "" {
+		fmt.Printf("next command not found!! Seting survival command!!!")
+		return survivalCommand
+	}
+	return cmd
+}
+
+// getPlayCommand is a function that starts the stream with the stored setings
+func getPlayCommand() (string, error) {
+	// TODO: test auth, audio decoding (soft|hard), transport (http|tcp|udp), fix Autoplay
+	// DOING: video output (resolution and refreshrate)
+	// GET PLAYER CONFIG
+	config, err := GetConfig()
+	if err != nil {
+		return "", errors.New("Error geting config from storage: " + err.Error())
+	}
+	err = setVideoOutput(config.Video)
+	if err != nil {
+		return "", err
 	}
 	// BUILD THE PLAY COMMAND ACCORDING TO CONFIG
-	var omxOptionsTemplate = template.Must(template.New("omxCommand").Parse(
-		"omxplayer -o hdmi --vol {{.Volume}} {{.URL}}",
-	))
-	var omxOptions bytes.Buffer
-	if err = omxOptionsTemplate.Execute(&omxOptions, playerTemplateData{
-		setings.Volume,
-		setings.URL,
-	}); err != nil {
-		fmt.Println("Error generating omxplayer command: ", err)
-		actionChannel <- errorAction
-		return
+	// transform volume [0:100] => [-6000:0]
+	volume := strconv.Itoa(-6000 + 60*config.Volume)
+	// transform URL http(s)://(www.)... => rtmp://(username:password@)...
+	re := regexp.MustCompile(`(https:\/\/www\.|http:\/\/www\.|rtmp:\/\/www\.|https:\/\/|http:\/\/|rtmp:\/\/|www\.)`)
+	var auth string
+	user := config.Username
+	pass := config.Password
+	if user != "" || pass != "" {
+		auth = user + ":" + pass + "@"
 	}
-	// RUN THE COMMAND
-	err = runAction(p, omxOptions.String(), playing, true)
-	// NOTIFY THAT THE PROCESS IS DONE VIA actionChannel
-	pp.waitingToPlay = false
-	if err != nil {
-		actionChannel <- errorAction
-		return
-	}
-	actionChannel <- doneAction
-	return
+	url := re.ReplaceAllString(config.URL, "rtmp://"+auth)
+	// transform the buffer ms => s
+	threshold := strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64)
+	cmd := "omxplayer -o hdmi --vol " + volume + " --threshold " + threshold + " " + url
+	return cmd, nil
 }
 
-func restart(p *player, k *killBlocker, pp *playPriority) {
-	// KILL ANY RUNNING PROCESS
-	killRuningProcess(p, k)
-	// PLAY
-	start(p, k, pp)
-}
-
-// killRuningProcess is a function that terminates the process that is being runned by p
-func killRuningProcess(p *player, k *killBlocker) {
-	k.mu.Lock()
-	defer k.mu.Unlock()
-	if p.State != runningNothing && !k.waitingToDie {
-		k.waitingToDie = true
-		// kill command
-		fmt.Println("Killing current process")
-		if err := p.Command.Process.Kill(); err != nil {
-			fmt.Println("failed to kill process: ", err)
-			k.waitingToDie = false
-			killRuningProcess(p, k)
-		}
-		fmt.Println("Process murdered")
-	}
-}
+var lastIP string
 
 // displayIP is a function that generates an image containing the IP of the system, and display it through the player
-func displayIP(p *player, pp *playPriority) {
-	// IF THE PLAYER IS ALREADY DOING SOMETHING, return
-	if p.State != runningNothing || pp.waitingToPlay {
-		fmt.Println("The player is playing, waiting to play or already displaying IP.")
-		return
-	}
-	// Gen IP IMAGE
-	// magic command tells omxplayer to display the IP IMAGE
-	// RUN THE COMMAND
-	err := runAction(p, `sleep 10`, displayingIP, false)
-	// NOTIFY THAT THE PROCESS IS DONE VIA actionChannel
+func getDisplayCommand() (string, error) {
+	const destinationPath = "/tmp/raspberryConverter/"
+	const destinationFile = destinationPath + "IPImage.png"
+	// TODO: USE THE PI CMD INSTEAD OF THE SSH ONE
+	// WHEN SSH
+	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 " + destinationFile + " && read x < /dev/fd/1"
+	// WHEN RUNNING SCRIPT FROM Pi
+	// const cmd = "sudo fbi --noverbose -a -T 1 " + destinationFile + " && read x < /dev/fd/1" // LAST PART OF THE COMMAND IT'S A WAIT IN ORDER TO MAKE THE COMMAND SYNC
+	// GET IP
+	config, err := network.GetConfig()
 	if err != nil {
-		actionChannel <- errorAction
-		return
+		fmt.Println(config)
+		return cmd, errors.New("Error geting config from network: " + err.Error())
 	}
-	actionChannel <- doneAction
+	// IF IP HAS CHANGED SINCE LAST IMAGE WAS GENERATED
+	if config.IP != lastIP {
+		// CREATE THE FOLDER IF NEEDED
+		os.MkdirAll(destinationPath, 0777)
+		// MAKE A NEW IMAGE
+		const w = 1920
+		const h = 1080
+		dc := gg.NewContext(w, h)
+		// LOAD BASE IMAGE
+		imgBytes, err := box.Find("bg.png")
+		if err != nil {
+			return cmd, errors.New("Error geting background image to generate the display IP image: " + err.Error())
+		}
+		imgReader := bytes.NewReader(imgBytes)
+		baseImage, _, err := image.Decode(imgReader)
+		if err != nil {
+			return cmd, errors.New("Error decoding the image: " + err.Error())
+		}
+		// LOAD FONT
+		// TODO: LOAD FROM BOX!!
+		if err := dc.LoadFontFace("/home/pi/go/src/raspberryConverter/services/player/assets/font.ttf", 70); err != nil {
+			return cmd, errors.New("Error loading font: " + err.Error())
+		}
+		// ADD THE IP TEXT IN THE CENTER OF THE IMAGE
+		dc.SetRGB(1, 1, 1) // FONT COLOR
+		dc.DrawImage(baseImage, 0, 0)
+		dc.DrawStringAnchored("http://"+config.IP, w/2, h/2, 0.5, 0.5)
+		dc.Clip()
+		// SAVE THE NEW IMAGE
+		err = dc.SavePNG(destinationFile)
+		if err != nil {
+			return cmd, errors.New("Error saving the new image: " + err.Error())
+		}
+		lastIP = config.IP
+	}
+	// RUN THE COMMAND
+	return cmd, nil
 }
 
-// runAction is a function that execute a command synchronously and once at a time (it blocks)
-func runAction(p *player, cmd, newState string, isPlay bool) error {
-	p.Command = exec.Command("/bin/sh", "-c", cmd)
-	// Block writes on p until the function is done
-	fmt.Println("BLOCKING: ", cmd)
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	// Set new state, run the command then set runing nothing state
-	p.State = newState
-	fmt.Println("Player: executing command START: ", cmd)
-	msg, err := p.Command.CombinedOutput()
-	p.State = runningNothing
-	// Logs
+func setVideoOutput(mode string) error {
+	// CHECK IF THE VIDEO OUTPUT IS ALREADY IN THE MODE
+	m, err := getVideoOutputMode(mode)
 	if err != nil {
-		fmt.Println("The command: '", cmd, "', has finished with error: ", msg, err)
-	} else {
-		fmt.Println("Player: executing command END: ", cmd)
+		return err
 	}
-	return err
+	msg, err := exec.Command("/bin/sh", "-c", "tvservice -s").CombinedOutput()
+	if err != nil {
+		fmt.Println(err, msg)
+		return errors.New("Error while geting the current video output mode")
+	}
+	regFind := regexp.MustCompile(`CEA \([0-9]{1,2}\)|DMT \([0-9]{1,2}\)`)
+	regClean := regexp.MustCompile(`\(|\)`)
+	currentM := `"` + regClean.ReplaceAllString(regFind.FindString(string(msg)), "") + `"`
+	if m == currentM {
+		// VIDEO OUTPUT IS ALREADY IN THE MODE
+		return nil
+	}
+	// CHANGE VIDEO OUTPUT MODE
+	msg, err = exec.Command("/bin/sh", "-c", "tvservice -e "+m+" && sleep 1 && fbset -depth 8 && fbset -depth 16").CombinedOutput()
+	if err != nil {
+		fmt.Println(err, msg)
+		return errors.New("Error while changing video outpot mode")
+	}
+	return nil
+}
+
+// getVideoOutputMode transforms mode string as specified by PlayerConfig model to the modes of "tvservice" in raspberry
+func getVideoOutputMode(mode string) (string, error) {
+	var m string
+	switch mode {
+	case "480i59.94":
+		m = `"CEA 6"`
+	case "480+i59.94":
+		m = `"CEA 7"`
+	case "576i50":
+		m = `"CEA 21"`
+	case "576+i50":
+		m = `"CEA 22"`
+	case "720p50":
+		m = `"CEA 19"`
+	case "720p59.94":
+		m = `"CEA 4"`
+	case "1080i50":
+		m = `"CEA 20"`
+	case "1080i59.94":
+		m = `"CEA 5"`
+	case "1080p50":
+		m = `"CEA 31"`
+	case "1080p59.94":
+		m = `"CEA 16"`
+	default:
+		return "", errors.New("Invalid video output mode")
+	}
+	return m, nil
 }

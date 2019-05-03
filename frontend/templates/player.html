@@ -19,9 +19,9 @@
                       <div class="mdl-selectfield mdl-js-selectfield">
                          <select class="mdl-selectfield__select" id="Video" name="Video" initialValueHackVideo="{{.Data.Video}}">
                             <option value="480i59.94">480i59.94 (4/3)</option>
-                            <option value="480i59.94">480i59.94 (16/9)</option>
+                            <option value="480+i59.94">480i59.94 (16/9)</option>
                             <option value="576i50">576i50 (4/3)</option>
-                            <option value="576i50">576i50 (16/9)</option>
+                            <option value="576+i50">576i50 (16/9)</option>
                             <option value="720p50">720p50 (16/9)</option>
                             <option value="720p59.94">720p59.94 (16/9)</option>
                             <option value="1080i50">1080i50 (16/9)</option>
@@ -59,7 +59,7 @@
                   </div>
                   <div class="mdl-list__item-secondary-content">
                      <div class="mdl-textfield mdl-js-textfield">
-                        <input required class="mdl-textfield__input" pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})" type="text" id="URL" name="URL" value="{{.Data.URL}}">
+                        <input required class="mdl-textfield__input" pattern="(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,}|rtmp?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})" type="text" id="URL" name="URL" value="{{.Data.URL}}">
                         <div class="mdl-textfield__error">Invalid format</div>
                      </div>
                   </div>
