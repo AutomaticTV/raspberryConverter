@@ -44,7 +44,9 @@ const displayingIP = "Displaying IP"
 const runningNothing = "Nothing running"
 const defaultState = displayingIP
 
-const autoPlayPeriod = 30 // seconds between each autoplay check
+const autoPlayPeriod = 30                               // seconds between each autoplay check
+const destinationPath = "/tmp/raspberryConverter/"      // path to store images (used to display IP)
+const destinationFile = destinationPath + "IPImage.png" // filepath to store images (used to display IP)
 
 // Init is a function that initializes the player, and the storage
 func Init() {
@@ -124,15 +126,10 @@ func playerController(initialState string) {
 			}
 		}
 		// ERROR KILLING PROCESS, IN THEORY THIS CASE SHOULD NEVER HAPPEN!
-		// if err != nil {
-		// 	go func(err error) {
-		// 		for err != nil {
-		fmt.Println("Error killing process!", err)
-		// 			// TODO: HERE A BIT OF PROPPER ERROR HANDLING SHOULD HAPPEN (EVALUATE IF IT'S REALLY NEEDED).
-		// 			err = killRuningProcess(&p, &k)
-		// 		}
-		// 	}(err)
-		// }
+		if err != nil {
+			// TODO: HERE A BIT OF PROPPER ERROR HANDLING SHOULD HAPPEN (EVALUATE IF IT'S REALLY NEEDED).
+			fmt.Println("Error killing process!", err)
+		}
 	}
 }
 

@@ -1,22 +1,18 @@
 package player
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"image"
-	"os"
 	"os/exec"
 	"raspberryConverter/services/network"
 	"regexp"
 	"strconv"
-
-	"github.com/fogleman/gg"
 )
 
 // playerLoop is a function that executes commands syncronously in a infinit loop.
 // The commands to be executed are set by playerController
 func playerLoop(p *player, k *killing) {
+	initImageMaker()
 	var failCounter int
 	const failLimit = 10
 	for {
@@ -114,8 +110,6 @@ var lastIP string
 
 // displayIP is a function that generates an image containing the IP of the system, and display it through the player
 func getDisplayCommand() (string, error) {
-	const destinationPath = "/tmp/raspberryConverter/"
-	const destinationFile = destinationPath + "IPImage.png"
 	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 " + destinationFile + " && read x < /dev/fd/1"
 	// GET IP
 	config, err := network.GetConfig()
@@ -125,34 +119,8 @@ func getDisplayCommand() (string, error) {
 	}
 	// IF IP HAS CHANGED SINCE LAST IMAGE WAS GENERATED
 	if config.IP != lastIP {
-		// CREATE THE FOLDER IF NEEDED
-		os.MkdirAll(destinationPath, 0777)
 		// MAKE A NEW IMAGE
-		const w = 1920
-		const h = 1080
-		dc := gg.NewContext(w, h)
-		// LOAD BASE IMAGE
-		imgBytes, err := box.Find("bg.png")
-		if err != nil {
-			return cmd, errors.New("Error geting background image to generate the display IP image: " + err.Error())
-		}
-		imgReader := bytes.NewReader(imgBytes)
-		baseImage, _, err := image.Decode(imgReader)
-		if err != nil {
-			return cmd, errors.New("Error decoding the image: " + err.Error())
-		}
-		// LOAD FONT
-		// TODO: LOAD FROM BOX!!
-		if err := dc.LoadFontFace("/home/pi/go/src/raspberryConverter/services/player/assets/font.ttf", 70); err != nil {
-			return cmd, errors.New("Error loading font: " + err.Error())
-		}
-		// ADD THE IP TEXT IN THE CENTER OF THE IMAGE
-		dc.SetRGB(1, 1, 1) // FONT COLOR
-		dc.DrawImage(baseImage, 0, 0)
-		dc.DrawStringAnchored("http://"+config.IP, w/2, h/2, 0.5, 0.5)
-		dc.Clip()
-		// SAVE THE NEW IMAGE
-		err = dc.SavePNG(destinationFile)
+		err = makeImage("http://" + config.IP)
 		if err != nil {
 			return cmd, errors.New("Error saving the new image: " + err.Error())
 		}
