@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 	"raspberryConverter/models"
+	"raspberryConverter/services/player"
 	"regexp"
 	"strconv"
 	"time"
@@ -13,6 +14,7 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
+// GetStatus returns the current Status of the system
 func GetStatus() (models.Status, error) {
 	CPU, err := getCPULoad()
 	if err != nil {
@@ -26,13 +28,21 @@ func GetStatus() (models.Status, error) {
 	if err != nil {
 		return statusError(err)
 	}
+	playerConfig, err := player.GetConfig()
+	if err != nil {
+		return statusError(err)
+	}
+	video, err := player.GetCurrentOutputModeString()
+	if err != nil {
+		return statusError(err)
+	}
 	status := models.Status{
 		CPU:         CPU,
 		RAM:         RAM,
 		Temperature: temp,
-		URL:         "http://fake.example",
-		Video:       "fake",
-		Status:      "fake",
+		URL:         playerConfig.URL,
+		Video:       video,
+		Status:      player.GetStatus(),
 	}
 	return status, nil
 }

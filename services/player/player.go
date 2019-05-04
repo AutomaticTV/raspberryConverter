@@ -17,7 +17,6 @@ import (
 // playerLoop is a function that executes commands syncronously in a infinit loop.
 // The commands to be executed are set by playerController
 func playerLoop(p *player, k *killing) {
-	// TODO: killall fbi when playing, black background in transitions
 	var failCounter int
 	const failLimit = 10
 	for {
@@ -76,9 +75,6 @@ func getNextCommand(nextState string) string {
 
 // getPlayCommand is a function that starts the stream with the stored setings
 func getPlayCommand() (string, error) {
-	// TODO: test auth, audio decoding (soft|hard), transport (http|tcp|udp), fix Autoplay
-	// DOING: video output (resolution and refreshrate)
-	// GET PLAYER CONFIG
 	config, err := GetConfig()
 	if err != nil {
 		return "", errors.New("Error geting config from storage: " + err.Error())
@@ -89,20 +85,29 @@ func getPlayCommand() (string, error) {
 	}
 	// BUILD THE PLAY COMMAND ACCORDING TO CONFIG
 	// transform volume [0:100] => [-6000:0]
-	volume := strconv.Itoa(-6000 + 60*config.Volume)
+	volume := "--vol " + strconv.Itoa(-6000+60*config.Volume) + " "
+	var decode string
+	if config.AudioDecoding == "Hardware" {
+		decode = "--hw "
+	}
 	// transform URL http(s)://(www.)... => rtmp://(username:password@)...
 	re := regexp.MustCompile(`(https:\/\/www\.|http:\/\/www\.|rtmp:\/\/www\.|https:\/\/|http:\/\/|rtmp:\/\/|www\.)`)
 	var auth string
-	user := config.Username
-	pass := config.Password
-	if user != "" || pass != "" {
-		auth = user + ":" + pass + "@"
+	var protocol string
+	if config.Username != "" || config.Password != "" {
+		auth = config.Username + ":" + config.Password + "@"
 	}
-	url := re.ReplaceAllString(config.URL, "rtmp://"+auth)
+	if config.Transport == "UDP" {
+		protocol = "udp://"
+	} else if config.Transport == "TCP" {
+		protocol = "tcp://"
+	} else {
+		protocol = "rtmp://"
+	}
+	url := re.ReplaceAllString(config.URL, protocol+auth)
 	// transform the buffer ms => s
-	threshold := strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64)
-	cmd := "omxplayer -o hdmi --vol " + volume + " --threshold " + threshold + " " + url
-	return cmd, nil
+	threshold := "--threshold " + strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64) + " "
+	return "omxplayer -o hdmi " + volume + threshold + decode + url + " && sudo killall fbi", nil
 }
 
 var lastIP string
@@ -111,11 +116,7 @@ var lastIP string
 func getDisplayCommand() (string, error) {
 	const destinationPath = "/tmp/raspberryConverter/"
 	const destinationFile = destinationPath + "IPImage.png"
-	// TODO: USE THE PI CMD INSTEAD OF THE SSH ONE
-	// WHEN SSH
 	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 " + destinationFile + " && read x < /dev/fd/1"
-	// WHEN RUNNING SCRIPT FROM Pi
-	// const cmd = "sudo fbi --noverbose -a -T 1 " + destinationFile + " && read x < /dev/fd/1" // LAST PART OF THE COMMAND IT'S A WAIT IN ORDER TO MAKE THE COMMAND SYNC
 	// GET IP
 	config, err := network.GetConfig()
 	if err != nil {
@@ -163,24 +164,20 @@ func getDisplayCommand() (string, error) {
 
 func setVideoOutput(mode string) error {
 	// CHECK IF THE VIDEO OUTPUT IS ALREADY IN THE MODE
-	m, err := getVideoOutputMode(mode)
+	m, err := stringToOutputMode(mode)
 	if err != nil {
 		return err
 	}
-	msg, err := exec.Command("/bin/sh", "-c", "tvservice -s").CombinedOutput()
+	currentM, err := getCurrentOutputMode()
 	if err != nil {
-		fmt.Println(err, msg)
-		return errors.New("Error while geting the current video output mode")
+		return err
 	}
-	regFind := regexp.MustCompile(`CEA \([0-9]{1,2}\)|DMT \([0-9]{1,2}\)`)
-	regClean := regexp.MustCompile(`\(|\)`)
-	currentM := `"` + regClean.ReplaceAllString(regFind.FindString(string(msg)), "") + `"`
 	if m == currentM {
 		// VIDEO OUTPUT IS ALREADY IN THE MODE
 		return nil
 	}
 	// CHANGE VIDEO OUTPUT MODE
-	msg, err = exec.Command("/bin/sh", "-c", "tvservice -e "+m+" && sleep 1 && fbset -depth 8 && fbset -depth 16").CombinedOutput()
+	msg, err := exec.Command("/bin/sh", "-c", "tvservice -e "+m+" && sleep 1 && fbset -depth 8 && fbset -depth 16").CombinedOutput()
 	if err != nil {
 		fmt.Println(err, msg)
 		return errors.New("Error while changing video outpot mode")
@@ -188,8 +185,30 @@ func setVideoOutput(mode string) error {
 	return nil
 }
 
-// getVideoOutputMode transforms mode string as specified by PlayerConfig model to the modes of "tvservice" in raspberry
-func getVideoOutputMode(mode string) (string, error) {
+func getCurrentOutputMode() (string, error) {
+	msg, err := exec.Command("/bin/sh", "-c", "tvservice -s").CombinedOutput()
+	if err != nil {
+		fmt.Println(err, msg)
+		return "", errors.New("Error while geting the current video output mode")
+	}
+	regFind := regexp.MustCompile(`CEA \([0-9]{1,2}\)|DMT \([0-9]{1,2}\)`)
+	regClean := regexp.MustCompile(`\(|\)`)
+	return `"` + regClean.ReplaceAllString(regFind.FindString(string(msg)), "") + `"`, nil
+}
+
+// GetCurrentOutputModeString returns a string that descrives the video output, in a human friendly format.
+func GetCurrentOutputModeString() (string, error) {
+	msg, err := exec.Command("/bin/sh", "-c", "tvservice -s").CombinedOutput()
+	if err != nil {
+		fmt.Println(err, msg)
+		return "", errors.New("Error while geting the current video output mode")
+	}
+	reg := regexp.MustCompile(`.*\],`)
+	return reg.ReplaceAllString(string(msg), ""), nil
+}
+
+// stringToOutputMode transforms mode string as specified by PlayerConfig model to the modes of "tvservice" in raspberry
+func stringToOutputMode(mode string) (string, error) {
 	var m string
 	switch mode {
 	case "480i59.94":
