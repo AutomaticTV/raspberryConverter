@@ -7,10 +7,14 @@ import (
 	"os"
 
 	"github.com/fogleman/gg"
+	"github.com/gobuffalo/packr"
 )
 
 const w = 1920
 const h = 1080
+
+// box packs static assets (base image and font) required to create the IP image
+var box = packr.NewBox("./assets")
 
 func initImageMaker() (*gg.Context, error) {
 	// CREATE THE DESTINATION FOLDER IF NEEDED

@@ -6,8 +6,6 @@ import (
 	"os/exec"
 	"sync"
 	"time"
-
-	"github.com/gobuffalo/packr"
 )
 
 // player is the struct that controls the playback on the omxplayer
@@ -23,9 +21,6 @@ type killing struct {
 	inProgress bool
 	mu         sync.Mutex
 }
-
-// static image to be used in displayingIP mode.
-var box = packr.NewBox("./assets")
 
 // channel used to controll the player and possible values for the messages
 var channel = make(chan string)
@@ -44,8 +39,8 @@ const displayingIP = "Displaying IP"
 const runningNothing = "Nothing running"
 const defaultState = displayingIP
 
-const autoPlayPeriod = 30                               // seconds between each autoplay check
-const destinationPath = "/tmp/raspberryConverter/"      // path to store images (used to display IP)
+const autoPlayPeriod = 10                               // seconds between each autoplay check
+const destinationPath = "/var/lib/raspberryConverter/"  // path to store images (used to display IP)
 const destinationFile = destinationPath + "IPImage.png" // filepath to store images (used to display IP)
 
 // Init is a function that initializes the player, and the storage

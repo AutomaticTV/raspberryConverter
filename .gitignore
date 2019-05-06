@@ -1,2 +1,4 @@
 timing.md
 *.db
+build/pi-gen/deploy
+buildpi-gen

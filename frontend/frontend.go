@@ -1,6 +1,7 @@
 package frontend
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"raspberryConverter/models"
@@ -20,18 +21,24 @@ type page struct {
 var box = packr.NewBox("./templates")
 
 //dashboardTemplate is a template that produces the HTML code for the main page
-var dashboardTemplate = template.Must(template.New("Dashboard").Parse(getTemplate("header.html") +
-	getTemplate("dashboard.html") +
-	getTemplate("status.html") +
-	getTemplate("password.html") +
-	getTemplate("network.html") +
-	getTemplate("player.html"),
-))
+var dashboardTemplate *template.Template
 
 //login is a template that produces the HTML code for the login page
-var loginTemplate = template.Must(template.New("Login").Parse(getTemplate("header.html") +
-	getTemplate("login.html"),
-))
+var loginTemplate *template.Template
+
+// Init loads the static files to be rendered
+func Init() {
+	loginTemplate = template.Must(template.New("Login").Parse(getTemplate("header.html") +
+		getTemplate("login.html"),
+	))
+	dashboardTemplate = template.Must(template.New("Dashboard").Parse(getTemplate("header.html") +
+		getTemplate("dashboard.html") +
+		getTemplate("status.html") +
+		getTemplate("password.html") +
+		getTemplate("network.html") +
+		getTemplate("player.html"),
+	))
+}
 
 // Login is a function that render the status.html template and send it through w
 func Login(isUpdate bool, err error, w http.ResponseWriter) error {
@@ -89,6 +96,9 @@ func setSuccessOrError(p *page, err error, isUpdate bool, successMessage string)
 }
 
 func getTemplate(name string) string {
-	temp, _ := box.FindString(name)
-	return temp
+	temp, err := box.Find(name)
+	if err != nil {
+		fmt.Println("error geting from tha box", err)
+	}
+	return string(temp)
 }

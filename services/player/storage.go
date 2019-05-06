@@ -11,8 +11,10 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite" //gorm requires sqlite
 )
 
+const dbPath = "/var/lib/raspberryConverter/playerConfig.db"
+
 func initStorage() error {
-	db, err := gorm.Open("sqlite3", "playerConfig.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return err
@@ -24,7 +26,7 @@ func initStorage() error {
 // GetConfig is a function that retrieves the player config from persistance
 func GetConfig() (models.PlayerConfig, error) {
 	// connect to db
-	db, err := gorm.Open("sqlite3", "playerConfig.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	var c models.PlayerConfig
 	defer db.Close()
 	if err != nil {
@@ -39,7 +41,7 @@ func GetConfig() (models.PlayerConfig, error) {
 
 // SetConfig is a function that stores to persistance
 func SetConfig(c models.PlayerConfig) error {
-	db, err := gorm.Open("sqlite3", "playerConfig.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return err
@@ -54,7 +56,7 @@ func SetConfig(c models.PlayerConfig) error {
 }
 
 func createDefaultConfig() error {
-	db, err := gorm.Open("sqlite3", "playerConfig.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return err

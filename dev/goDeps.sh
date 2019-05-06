@@ -10,4 +10,5 @@ gopkg.in/validator.v2 \
 golang.org/x/image/font \
 golang.org/x/image/font/basicfont \
 golang.org/x/image/math/fixed \
-github.com/fogleman/gg
+github.com/fogleman/gg \
+&& go get -u github.com/gobuffalo/packr/packr

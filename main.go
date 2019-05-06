@@ -171,6 +171,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	staticFiles := packr.NewBox("frontend/static")
+	frontend.Init()
 	player.Init()
 	auth.Init()
 	fmt.Println("Server starting, point your browser to localhost" + port + " to start")

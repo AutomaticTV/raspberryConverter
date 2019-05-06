@@ -6,4 +6,4 @@ export GOPATH=$HOME/go
 export PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
 EOF
 source ~/.bashrc
-sudo apt-get install libpcre3 fonts-freefont-ttf omxplayer fbi -y
+sudo apt-get install git libpcre3 fonts-freefont-ttf omxplayer fbi -y

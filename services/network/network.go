@@ -58,8 +58,9 @@ func SetConfig(config models.NetworkConfig) error {
 	return resetConfig()
 }
 
+// GetConfig returns the network configuration of the system
 func GetConfig() (models.NetworkConfig, error) {
-	ipRouteCommand, err := exec.Command("ip", "route").CombinedOutput()
+	ipRouteCommand, err := exec.Command("/bin/sh", "-c", "ip route").CombinedOutput()
 	if err != nil {
 		return networkError(err)
 	}

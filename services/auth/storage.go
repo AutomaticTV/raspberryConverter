@@ -8,7 +8,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type User struct {
+const dbPath = "/var/lib/raspberryConverter/auth.db"
+
+type user struct {
 	gorm.Model
 	Username       string
 	HashedPassword []byte
@@ -16,25 +18,25 @@ type User struct {
 
 // Init is a function that initializes the persistance for authentication
 func Init() error {
-	db, err := gorm.Open("sqlite3", "auth.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return err
 	}
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&user{})
 	createDefaultUser()
 	return nil
 }
 
 func getHashedPasswword(username string) ([]byte, error) {
 	// connect to db
-	db, err := gorm.Open("sqlite3", "auth.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return nil, err
 	}
 	// get user with given username
-	var user User
+	var user user
 	if dbc := db.Where("username = ?", username).First(&user); dbc.Error != nil {
 		return nil, errors.New("Username not in DB")
 	}
@@ -44,13 +46,13 @@ func getHashedPasswword(username string) ([]byte, error) {
 
 func updatePassword(username string, oldPass string, newPass string) error {
 	// connect to db
-	db, err := gorm.Open("sqlite3", "auth.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return err
 	}
 	// get user with given username
-	var user User
+	var user user
 	dbc := db.Where(
 		"username = ?",
 		username,
@@ -73,16 +75,16 @@ func updatePassword(username string, oldPass string, newPass string) error {
 }
 
 func createDefaultUser() error {
-	db, err := gorm.Open("sqlite3", "auth.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
 	if err != nil {
 		return err
 	}
 	registeredValues := 0
-	db.Find(&User{}).Count(&registeredValues)
+	db.Find(&user{}).Count(&registeredValues)
 	if registeredValues == 0 {
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin"), 14)
-		db.Create(&User{
+		db.Create(&user{
 			Username:       "admin",
 			HashedPassword: hashedPassword,
 		})
