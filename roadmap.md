@@ -29,7 +29,7 @@
 * Unify the dev and build scripts: most of the code is repeated.
 * Improve the build process: clone the repo (pi-gen) instead of having the code as part of this repo.
 * Use go get instead of goDeps.sh
-
+* Speed up auth related operations: current used library takes a lot of time on ARM systems.
 ---
 
 # Future releases

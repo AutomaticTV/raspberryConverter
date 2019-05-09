@@ -1,3 +1,5 @@
+// raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3.
+// The project consist of two main elements: a web server that provides a web interface to configure the service and a player to show the streaming content through HDMI.
 package main
 
 import (

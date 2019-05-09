@@ -1,3 +1,4 @@
+// Package player is in charge of controlling everything is displayed over the HDMI port
 package player
 
 import (

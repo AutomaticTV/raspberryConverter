@@ -11,8 +11,10 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite" //gorm requires sqlite
 )
 
+// dbPath represents the filepath where sqlite files are stored
 const dbPath = "/var/lib/raspberryConverter/playerConfig.db"
 
+// initStorage creates the DB table (if it's not done yet) and set a default entry
 func initStorage() error {
 	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()
@@ -55,6 +57,7 @@ func SetConfig(c models.PlayerConfig) error {
 	return nil
 }
 
+// createDefaultConfig set the first record on the DB
 func createDefaultConfig() error {
 	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()

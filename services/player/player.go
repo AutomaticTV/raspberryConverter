@@ -48,6 +48,8 @@ func playerLoop(p *player, k *killing) {
 	}
 }
 
+// getNextCommand returns a exacutable command based on nextState
+// in other words it return the displayIP command, the play command, or in a worst case scenario the survival command
 func getNextCommand(nextState string) string {
 	const survivalCommand = "sleep 10"
 	var cmd string
@@ -131,6 +133,7 @@ func getDisplayCommand() (string, error) {
 	return cmd, nil
 }
 
+// setVideoOutput will change the output mode of the HDMI port based on the given mode
 func setVideoOutput(mode string) error {
 	// CHECK IF THE VIDEO OUTPUT IS ALREADY IN THE MODE
 	m, err := stringToOutputMode(mode)
@@ -154,6 +157,7 @@ func setVideoOutput(mode string) error {
 	return nil
 }
 
+// getCurrentOutputMode return information about the video output that is currently used in the HDMI port
 func getCurrentOutputMode() (string, error) {
 	msg, err := exec.Command("/bin/sh", "-c", "tvservice -s").CombinedOutput()
 	if err != nil {

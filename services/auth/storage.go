@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// filepath where sqlite file is placed
 const dbPath = "/var/lib/raspberryConverter/auth.db"
 
 type user struct {
@@ -28,6 +29,7 @@ func Init() error {
 	return nil
 }
 
+// getHashedPasswword return a byte array that represents the hashed password associated to username
 func getHashedPasswword(username string) ([]byte, error) {
 	// connect to db
 	db, err := gorm.Open("sqlite3", dbPath)
@@ -44,6 +46,8 @@ func getHashedPasswword(username string) ([]byte, error) {
 	return user.HashedPassword, nil
 }
 
+// updatePassword change the password associated to username if oldPass matches with the current record
+// else the function returns an error
 func updatePassword(username string, oldPass string, newPass string) error {
 	// connect to db
 	db, err := gorm.Open("sqlite3", dbPath)
@@ -74,6 +78,7 @@ func updatePassword(username string, oldPass string, newPass string) error {
 	return nil
 }
 
+// createDefaultUser set the first user (admin - admin) to the DB
 func createDefaultUser() error {
 	db, err := gorm.Open("sqlite3", dbPath)
 	defer db.Close()

@@ -10,12 +10,17 @@ import (
 	"github.com/gobuffalo/packr"
 )
 
+// w represents the width in pixels of the image
 const w = 1920
+
+// h represents the height in pixels of the image
 const h = 1080
 
 // box packs static assets (base image and font) required to create the IP image
 var box = packr.NewBox("./assets")
 
+// initImageMaker loads the necessary resources to create the desired images,
+// and can be reused in the different executions
 func initImageMaker() (*gg.Context, error) {
 	// CREATE THE DESTINATION FOLDER IF NEEDED
 	imageMaker := gg.NewContext(w, h)
@@ -48,6 +53,7 @@ func initImageMaker() (*gg.Context, error) {
 	return imageMaker, nil
 }
 
+// makeImage stores a image at destinationFile, this new image is based on services/player/assets/bg.png with a label text placed in the middle of the image
 func makeImage(label string) error {
 	imageMaker, err := initImageMaker()
 	if err != nil {

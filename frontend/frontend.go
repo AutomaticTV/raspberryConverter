@@ -1,3 +1,4 @@
+// Package frontend is in charge of rendering html pages and sending them.
 package frontend
 
 import (

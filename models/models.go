@@ -1,3 +1,4 @@
+// Package models is where structs that are used across the project are declared
 package models
 
 import "github.com/jinzhu/gorm"

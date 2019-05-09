@@ -47,6 +47,7 @@ func GetStatus() (models.Status, error) {
 	return status, nil
 }
 
+// getCPULoad returns the usage in % of the busiest core of the CPU.
 func getCPULoad() (int, error) {
 	t, err := time.ParseDuration("-1s")
 	if err != nil {
@@ -65,6 +66,7 @@ func getCPULoad() (int, error) {
 	return int(percent), nil
 }
 
+// getMemoryLoad return the used ammount of memory in %
 func getMemoryLoad() (int, error) {
 	v, err := mem.VirtualMemory()
 	if err != nil {
@@ -73,6 +75,7 @@ func getMemoryLoad() (int, error) {
 	return int(v.UsedPercent), nil
 }
 
+// getTemperature returns the temperature of the system in celsius degrees
 func getTemperature() (float64, error) {
 	output, err := exec.Command("vcgencmd", "measure_temp").CombinedOutput()
 	if err != nil {
@@ -86,6 +89,7 @@ func getTemperature() (float64, error) {
 	return tempF, nil
 }
 
+// statusError is a helper function that log an error an return a better formated error
 func statusError(err error) (models.Status, error) {
 	fmt.Println(err)
 	return models.Status{}, errors.New("Error geting current status information")
