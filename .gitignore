@@ -1,4 +1,12 @@
 timing.md
 *.db
-build/pi-gen/deploy
+*.zip
+*.img
+build/pi-gen/deploy/*
 buildpi-gen
+build/pi-gen/work/*
+config
+postrun.sh
+.pc
+*-pc
+apt-cacher-ng/

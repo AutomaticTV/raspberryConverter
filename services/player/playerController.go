@@ -89,7 +89,6 @@ func playerController(initialState string) {
 	var err error
 	for {
 		// wait for new mwssage
-		fmt.Println(p)
 		msg := <-channel
 		// decide the next state of the player based on the message
 		switch msg {

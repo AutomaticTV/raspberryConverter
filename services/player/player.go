@@ -104,6 +104,7 @@ func getPlayCommand() (string, error) {
 	// transform the buffer ms => s
 	threshold := "--threshold " + strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64) + " "
 	return "omxplayer -o hdmi " + volume + threshold + decode + url + " && sudo killall fbi", nil
+	//  && /var/lib/raspberryConverter/omxController.sh hidevideo && /var/lib/raspberryConverter/omxController.sh unhidevideo
 }
 
 var lastIP string

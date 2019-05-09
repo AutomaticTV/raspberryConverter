@@ -16,9 +16,11 @@ import (
 	"github.com/gobuffalo/packr"
 )
 
-// port is a constant that describe the port listened by the server, example: http://localhost:5555
+// port describe the port listened by the server, example: http://localhost:5555
 const port = ":5555"
 
+// handler processes the requests received by the server and respon to them
+// according to the content of the request.
 func handler(w http.ResponseWriter, r *http.Request) {
 	// IF NOT LOGGED IN, GO TO LOGIN PAGE
 	if !auth.IsLoggedIn(r) && r.URL.Path != "/login" {
@@ -26,6 +28,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// CHECK IF REQUEST INCLUDES ANY FORM (AND TRIGGER NECESSARY ACTIONS ACCORDING TO)
 	isUpdate, requestError := requestHandler(w, r)
 
 	// RETURN THE APROPIATE FRONTEND PAGE ACCORDING TO THE PATH
@@ -73,7 +76,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// requestHandler is a function that checks if the request includes an expected form and if so it gets handled.
+// requestHandler checks if the request includes an expected form and if so it gets handled.
 // Returns true and a possible error if r includes a form otherwisr (false, nil)
 func requestHandler(w http.ResponseWriter, r *http.Request) (bool, error) {
 	// LOGIN
@@ -146,6 +149,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) (bool, error) {
 	return false, nil
 }
 
+// combineErrors return a single error messages given two errors (that may be nil)
 func combineErrors(err1 error, err2 error) error {
 	var errorString string
 	if err1 != nil {
@@ -160,6 +164,7 @@ func combineErrors(err1 error, err2 error) error {
 	return nil
 }
 
+// logoutHandler clean the session associated to the user of the request and redirrects to login page
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	err := auth.Logout(w, r)
 	if err != nil {
@@ -169,6 +174,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusFound)
 }
 
+// main get executed at the beginning, and initializes the web server and the rest of the components that require initialization.
 func main() {
 	staticFiles := packr.NewBox("frontend/static")
 	frontend.Init()

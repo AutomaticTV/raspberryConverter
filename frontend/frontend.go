@@ -9,6 +9,7 @@ import (
 	"github.com/gobuffalo/packr"
 )
 
+// page contains all the necessary fields to render a page
 type page struct {
 	Page           string
 	Error          bool
@@ -18,6 +19,7 @@ type page struct {
 	Data           interface{}
 }
 
+// box conatians all the static files needed to render pages.
 var box = packr.NewBox("./templates")
 
 //dashboardTemplate is a template that produces the HTML code for the main page
@@ -85,6 +87,7 @@ func Password(isUpdate bool, err error, w http.ResponseWriter) error {
 	return dashboardTemplate.Execute(w, p)
 }
 
+// setSuccessOrError modify p in order to render a potential error or success message.
 func setSuccessOrError(p *page, err error, isUpdate bool, successMessage string) {
 	if err != nil {
 		p.Error = true
@@ -95,6 +98,7 @@ func setSuccessOrError(p *page, err error, isUpdate bool, successMessage string)
 	}
 }
 
+// getTemplate load html templates from box
 func getTemplate(name string) string {
 	temp, err := box.Find(name)
 	if err != nil {
