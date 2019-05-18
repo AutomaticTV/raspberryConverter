@@ -1,6 +1,6 @@
-// raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3.
+// Package raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3.
 // The project consist of two main elements: a web server that provides a web interface to configure the service and a player to show the streaming content through HDMI.
-package main
+package raspberryConverter
 
 import (
 	"errors"
@@ -14,12 +14,13 @@ import (
 	"raspberryConverter/services/network"
 	"raspberryConverter/services/player"
 	"strconv"
+	"time"
 
 	"github.com/gobuffalo/packr"
 )
 
 // port describe the port listened by the server, example: http://localhost:5555
-const port = ":5555"
+const port = ":80"
 
 // handler processes the requests received by the server and respon to them
 // according to the content of the request.
@@ -117,7 +118,6 @@ func requestHandler(w http.ResponseWriter, r *http.Request) (bool, error) {
 				Video:         r.FormValue("Video"),
 				AudioDecoding: r.FormValue("AudioDecoding"),
 				URL:           r.FormValue("URL"),
-				Transport:     r.FormValue("Transport"),
 				Buffer:        buf,
 				Username:      r.FormValue("Username"),
 				Password:      r.FormValue("Password"),
@@ -189,5 +189,12 @@ func main() {
 	http.HandleFunc("/login", handler)
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/dashboard/", handler)
-	http.ListenAndServe(port, nil)
+	err := http.ListenAndServe(port, nil)
+	for err != nil {
+		player.MakeImage("NO INTERNET")
+		fmt.Println("Error starting http server: ", err)
+		fmt.Println("trying again in 10 seconds")
+		time.Sleep(10000000000) // 10 seconds expressed in nanoseconds
+		err = http.ListenAndServe(port, nil)
+	}
 }
