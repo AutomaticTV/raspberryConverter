@@ -28,6 +28,7 @@ var channel = make(chan string)
 var statusChannel = make(chan string)
 
 const startMsg = "Start"
+const startedMsg = "Started"
 const stopMsg = "Stop"
 const restartMsg = "Reset"
 const statusMsg = "Status"
@@ -98,6 +99,8 @@ func playerController(initialState string) {
 				p.nextState = playing
 				err = killRuningProcess(&p, &k)
 			}
+		case startedMsg:
+			forceDisplay()
 		case restartMsg:
 			p.nextState = playing
 			err = killRuningProcess(&p, &k)

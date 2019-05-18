@@ -53,8 +53,8 @@ func initImageMaker() (*gg.Context, error) {
 	return imageMaker, nil
 }
 
-// makeImage stores a image at destinationFile, this new image is based on services/player/assets/bg.png with a label text placed in the middle of the image
-func makeImage(label string) error {
+// MakeImage stores a image at destinationFile, this new image is based on services/player/assets/bg.png with a label text placed in the middle of the image
+func MakeImage(label string) error {
 	imageMaker, err := initImageMaker()
 	if err != nil {
 		return errors.New("Error initializig imageMaker: " + err.Error())

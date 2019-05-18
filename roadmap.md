@@ -1,18 +1,16 @@
 # TO DO (first release):
 ### Fixtures
-* Remove transport option
+* Remove transport ==> CHECK
 * Improve delay (research on ffmpeg / omxplayer buffers)
-* Set defaults for player settings
-* Fix "fake playing" ==> omxController.sh?
+* Set defaults for player settings  ==> CHECK
+* Fix "fake playing" ==> omxController.sh?   ==> CHECK
 * Change resolution on Display IP (not only on play)
 * Disable SSH before release !!
-* Change to port 80 before release
 ### Testing
-* Stable behavior on network drop
+* Stable behavior on network drop  ==> CHECK
 * Playing for long time
 ### Meta
-* Publish documentation on GoDoc
-* Style guide (how to change images)
+* Publish documentation on GoDoc (change main to raspberryConverter?)  ==> CHECK
 
 ---
 

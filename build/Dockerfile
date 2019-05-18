@@ -13,6 +13,6 @@ COPY models ./models
 COPY services ./services
 COPY main.go ./
 # GOARM=6 (Raspberry Pi A, A+, B, B+, Zero) GOARM=7 (Raspberry Pi 2, 3)
-RUN GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 CC=arm-linux-gnueabihf-gcc packr build -v
+RUN GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=1 CC=arm-linux-gnueabihf-gcc packr build -v -o raspberryConverter
 # RUN
 CMD ["cp", "raspberryConverter", "/out"]

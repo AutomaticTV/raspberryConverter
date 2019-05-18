@@ -69,14 +69,13 @@ func createDefaultConfig() error {
 	if registeredValues == 0 {
 		db.Create(&models.PlayerConfig{
 			Video:         "1080p59.94",
-			AudioDecoding: "Software",
+			AudioDecoding: "Hardware",
 			URL:           "https://some.example",
-			Transport:     "HTTP",
 			Buffer:        300,
-			Username:      "service_username",
-			Password:      "service_password",
+			Username:      "",
+			Password:      "",
 			Volume:        0,
-			Autoplay:      "No",
+			Autoplay:      "Yes",
 		})
 	}
 	return nil

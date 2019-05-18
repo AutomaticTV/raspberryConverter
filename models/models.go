@@ -9,7 +9,6 @@ type PlayerConfig struct {
 	Video         string `validate:""`
 	AudioDecoding string `validate:""`
 	URL           string `validate:""`
-	Transport     string `validate:""`
 	Buffer        int    `validate:""`
 	Username      string `validate:""`
 	Password      string `validate:""`

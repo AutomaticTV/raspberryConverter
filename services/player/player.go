@@ -88,25 +88,22 @@ func getPlayCommand() (string, error) {
 	if config.AudioDecoding == "Hardware" {
 		decode = "--hw "
 	}
-	// transform URL http(s)://(www.)... => rtmp://(username:password@)...
+	// transform URL http(s)://(www.)... => rtmp://(username:paszsword@)...
 	re := regexp.MustCompile(`(https:\/\/www\.|http:\/\/www\.|rtmp:\/\/www\.|https:\/\/|http:\/\/|rtmp:\/\/|www\.)`)
 	var auth string
-	var protocol string
 	if config.Username != "" || config.Password != "" {
 		auth = config.Username + ":" + config.Password + "@"
 	}
-	if config.Transport == "UDP" {
-		protocol = "udp://"
-	} else if config.Transport == "TCP" {
-		protocol = "tcp://"
-	} else {
-		protocol = "rtmp://"
-	}
-	url := re.ReplaceAllString(config.URL, protocol+auth)
+	url := re.ReplaceAllString(config.URL, "rtmp://"+auth)
 	// transform the buffer ms => s
 	threshold := "--threshold " + strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64) + " "
+	channel <- startedMsg
 	return "omxplayer -o hdmi " + volume + threshold + decode + url + " && sudo killall fbi", nil
-	//  && /var/lib/raspberryConverter/omxController.sh hidevideo && /var/lib/raspberryConverter/omxController.sh unhidevideo
+}
+
+func forceDisplay() {
+	cmd := exec.Command("/bin/sh", "-c", "/var/lib/raspberryConverter/omxController.sh hidevideo && /var/lib/raspberryConverter/omxController.sh unhidevideo")
+	cmd.Run()
 }
 
 var lastIP string
@@ -123,7 +120,7 @@ func getDisplayCommand() (string, error) {
 	// IF IP HAS CHANGED SINCE LAST IMAGE WAS GENERATED
 	if config.IP != lastIP {
 		// MAKE A NEW IMAGE
-		err = makeImage("http://" + config.IP)
+		err = MakeImage("http://" + config.IP)
 		if err != nil {
 			return cmd, errors.New("Error saving the new image: " + err.Error())
 		}
