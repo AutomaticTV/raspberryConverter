@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
-	"raspberryConverter/services/network"
+	"raspberryConverter/network"
 	"regexp"
 	"strconv"
 )

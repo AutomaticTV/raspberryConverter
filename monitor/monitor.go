@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 	"raspberryConverter/models"
-	"raspberryConverter/services/player"
+	"raspberryConverter/player"
 	"regexp"
 	"strconv"
 	"time"
