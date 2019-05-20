@@ -21,7 +21,7 @@ This section provides a guide to set up an environment using a Raspberry Pi in o
 
 ### SET UP THE DEVELOPMENT ENVIRONMENT
 
-1. Flash a Raspbian Stretch Lite image on a SD card. (Download [here](https://www.raspberrypi.org/downloads/raspbian/)
+1. Flash a Raspbian Stretch Lite image on a SD card. (Download [here](https://www.raspberrypi.org/downloads/raspbian/))
 2. Log into your Raspberry with the flashed SD card. (user: pi, pass: raspberry)
 3. Install git, clone this repo and install dependencies: `sudo apt-get install git -y && git clone https://github.com/AutomaticTV/raspberryConverter && sh raspberryConverter/dev/piDevEnv.sh`
 4. Reboot: `sudo reboot`
