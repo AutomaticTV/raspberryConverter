@@ -14,14 +14,14 @@ raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Ras
 8. Finally in the STATUS page you can start playing the video by pressing the START button, in a few seconds the video should display in the monitor connected to the Raspberry Pi.
 
 ## ABOUT THE CODE
-All the code is documented [here](xxxxxxxxxxxx). The code is mostly written in Golang, the exception is the frontend part which is implemented with HTML, CSS and JS. In order to provide a Material Design style the library [Material Design Lite](xxxxxxxxxxxx) is used, the combination of the above makes it possible for any web frontend developer to easily modify the aspect of the frontend.
+All the code is documented [here](https://godoc.org/github.com/AutomaticTV/raspberryConverter). The code is mostly written in Golang, the exception is the frontend part which is implemented with HTML, CSS and JS. In order to provide a Material Design style the library [Material Design Lite](https://getmdl.io/) is used, the combination of the above makes it possible for any web frontend developer to easily modify the aspect of the frontend.
 
 ## DEVELOPMENT
 This section provides a guide to set up an environment using a Raspberry Pi in order to be able to test and modify the code of this project.
 
 ### SET UP THE DEVELOPMENT ENVIRONMENT
 
-1. Flash a Raspbian Stretch Lite image on a SD card. (Download (here)[https://www.raspberrypi.org/downloads/raspbian/])
+1. Flash a Raspbian Stretch Lite image on a SD card. (Download [here](https://www.raspberrypi.org/downloads/raspbian/)
 2. Log into your Raspberry with the flashed SD card. (user: pi, pass: raspberry)
 3. Install git, clone this repo and install dependencies: `sudo apt-get install git -y && git clone https://github.com/AutomaticTV/raspberryConverter && sh raspberryConverter/dev/piDevEnv.sh`
 4. Reboot: `sudo reboot`
