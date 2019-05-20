@@ -9,12 +9,11 @@
 ### Testing
 * Stable behavior on network drop  ==> CHECK
 * Playing for long time
-### Meta
-* Publish documentation on GoDoc (change main to raspberryConverter?)  ==> CHECK
 
 ---
 
 # Second release
+* Refactor the code in order to get fully functional godoc
 * Shutdown / Reboot button (frontend and backend)
 * Keyboard sequence to set DHCP
 * User input validation (it's set up but not implemented, using "gopkg.in/validator.v2" on structs)

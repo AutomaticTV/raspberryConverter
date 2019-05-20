@@ -1,3 +1,4 @@
+// Package monitor is used to collect stats of the raspberry
 package monitor
 
 import (

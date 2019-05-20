@@ -1,3 +1,4 @@
+// Package network is used to get and set network setings on the raspberry
 package network
 
 import (
