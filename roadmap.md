@@ -1,10 +1,9 @@
 # TO DO (first release):
 ### Fixtures
+* Improve delay (research on ffmpeg / omxplayer buffers) ==> CHECK
 * Remove transport ==> CHECK
-* Improve delay (research on ffmpeg / omxplayer buffers)
 * Set defaults for player settings  ==> CHECK
 * Fix "fake playing" ==> omxController.sh?   ==> CHECK
-* Change resolution on Display IP (not only on play)
 * Disable SSH before release !!
 ### Testing
 * Stable behavior on network drop  ==> CHECK
@@ -13,6 +12,7 @@
 ---
 
 # Second release
+* Change resolution on Display IP (not only on play)
 * Refactor the code in order to get fully functional godoc
 * Shutdown / Reboot button (frontend and backend)
 * Keyboard sequence to set DHCP

@@ -98,7 +98,7 @@ func getPlayCommand() (string, error) {
 	// transform the buffer ms => s
 	threshold := "--threshold " + strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64) + " "
 	channel <- startedMsg
-	return "omxplayer -o hdmi " + volume + threshold + decode + url + " && sudo killall fbi", nil
+	return "omxplayer -o hdmi --live " + volume + threshold + decode + url + " && sudo killall fbi", nil
 }
 
 func forceDisplay() {

@@ -67,3 +67,5 @@ A few modifications are done in order to include the required software to run th
 1. Add a file named SKIP under the folder stage3, stage4 and stage5. Remove \*Export files under this folders as well. file This will produce a image based on Rasbian lite (instead of the full desktop image).
 2. Under the directory stage2 a folder will be added. The name of this folder will start with 04. This folder will contain code that will be executed in the image creation process right after the Raspbian lite is formed.
 3. In the described folder an script will be placed this script will do the following: copy all the necessary files (binary, service descriptors and splash image) to the resulting root file system, register the services, install necessary packages (omxplayer, ...) and modify some files in order to produce a silent boot (just a background image with no logs).
+
+All those changes are made using the build/build.sh script
