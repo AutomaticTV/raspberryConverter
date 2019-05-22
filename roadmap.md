@@ -1,10 +1,10 @@
 # TO DO (first release):
 ### Fixtures
+* DISABLE SSH
 * Improve delay (research on ffmpeg / omxplayer buffers) ==> CHECK
 * Remove transport ==> CHECK
 * Set defaults for player settings  ==> CHECK
 * Fix "fake playing" ==> omxController.sh?   ==> CHECK
-* Disable SSH before release !!
 ### Testing
 * Stable behavior on network drop  ==> CHECK
 * Playing for long time

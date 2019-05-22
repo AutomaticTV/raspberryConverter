@@ -1,12 +1,13 @@
 // Package raspberryConverter is a JEOS (Just Enought Operating System) to play RTMP on Raspberry Pi 3.
 // The project consist of two main elements: a web server that provides a web interface to configure the service and a player to show the streaming content through HDMI.
-package raspberryConverter
+package main
 
 import (
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"os/exec"
 	"raspberryConverter/auth"
 	"raspberryConverter/frontend"
 	"raspberryConverter/models"
@@ -190,11 +191,15 @@ func main() {
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/dashboard/", handler)
 	err := http.ListenAndServe(port, nil)
+	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 /var/lib/raspberryConverter/IPImage.png"
 	for err != nil {
+		player.LastIP = "fail"
 		player.MakeImage("NO INTERNET")
+		exec.Command("/bin/sh", "-c", cmd).Run()
 		fmt.Println("Error starting http server: ", err)
 		fmt.Println("trying again in 10 seconds")
-		time.Sleep(10000000000) // 10 seconds expressed in nanoseconds
+		time.Sleep(1000000000) // 1 second expressed in nanoseconds
 		err = http.ListenAndServe(port, nil)
+		player.LastIP = "try"
 	}
 }

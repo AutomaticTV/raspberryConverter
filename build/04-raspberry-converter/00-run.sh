@@ -6,7 +6,7 @@ cp raspberryConverter "${ROOTFS_DIR}/etc/systemd/raspberryConverter"
 cp splashScreen.service "${ROOTFS_DIR}/etc/systemd/system/splashScreen.service"
 cp splash.png "${ROOTFS_DIR}/opt/splash.png"
 mkdir "${ROOTFS_DIR}/var/lib/raspberryConverter"
-# cp omxController.sh "${ROOTFS_DIR}/var/lib/raspberryConverter/omxController.sh"
+cp omxController.sh "${ROOTFS_DIR}/var/lib/raspberryConverter/omxController.sh"
 
 
 

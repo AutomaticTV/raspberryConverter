@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Copy files to pi-gen
+mkdir pi-gen/stage2/04-raspberry-converter
+cp -r 04-raspberry-converter pi-gen/stage2/
+cp config pi-gen
+
 # Build the binary usimg docker (and move it to ./pi-gen/stage2/04-raspberry-converter/)
 docker rm -v pigen_work
 cp Dockerfile ..
@@ -10,8 +15,6 @@ rm ../goDeps.sh
 docker run --rm -v $(pwd)/pi-gen/stage2/04-raspberry-converter:/out raspberryconvertercompiler
 
 # Build the image
-cp 04-raspberry-converter pi-gen/stage2
-cp config pi-gen
 cd pi-gen
 touch stage3/SKIP
 touch stage4/SKIP
@@ -23,4 +26,8 @@ rm stage5/EXPORT_NOOBS
 docker-compose up -d
 ./build-docker.sh
 mv deploy/*.zip ..
+
+# Clean
 rm -rf deploy
+sudo rm -rf stage2/04-raspberry-converter
+rm config

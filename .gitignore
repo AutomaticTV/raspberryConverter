@@ -1,4 +1,6 @@
 timing.md
+build/justBin.sh
+raspberryConverter
 *.db
 *.zip
 *.img

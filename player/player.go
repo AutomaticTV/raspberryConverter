@@ -106,7 +106,8 @@ func forceDisplay() {
 	cmd.Run()
 }
 
-var lastIP string
+// LastIP is the last string used to build image
+var LastIP string
 
 // displayIP is a function that generates an image containing the IP of the system, and display it through the player
 func getDisplayCommand() (string, error) {
@@ -118,13 +119,13 @@ func getDisplayCommand() (string, error) {
 		return cmd, errors.New("Error geting config from network: " + err.Error())
 	}
 	// IF IP HAS CHANGED SINCE LAST IMAGE WAS GENERATED
-	if config.IP != lastIP {
+	if config.IP != LastIP {
 		// MAKE A NEW IMAGE
 		err = MakeImage("http://" + config.IP)
 		if err != nil {
 			return cmd, errors.New("Error saving the new image: " + err.Error())
 		}
-		lastIP = config.IP
+		LastIP = config.IP
 	}
 	// RUN THE COMMAND
 	return cmd, nil
