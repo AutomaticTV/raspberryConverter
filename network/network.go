@@ -93,7 +93,11 @@ func GetConfig() (models.NetworkConfig, error) {
 		Mode = "DHCP"
 	}
 	IP := ""
-	Gateway := strings.Split(string(ipRouteCommand), " ")[2]
+	chunks := strings.Split(string(ipRouteCommand), " ")
+	if 3 > len(chunks) {
+		return networkError(errors.New("No internet"))
+	}
+	Gateway := chunks[2]
 	Netmask := ""
 	DNS1 := ""
 	DNS2 := ""

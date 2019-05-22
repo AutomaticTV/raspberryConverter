@@ -116,7 +116,11 @@ func getDisplayCommand() (string, error) {
 	config, err := network.GetConfig()
 	if err != nil {
 		fmt.Println(config)
-		return cmd, errors.New("Error geting config from network: " + err.Error())
+		err = MakeImage("NO INTERNET")
+		if err != nil {
+			return cmd, errors.New("Error saving the new image: " + err.Error())
+		}
+		LastIP = "error"
 	}
 	// IF IP HAS CHANGED SINCE LAST IMAGE WAS GENERATED
 	if config.IP != LastIP {

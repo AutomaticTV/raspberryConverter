@@ -194,10 +194,10 @@ func main() {
 	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 /var/lib/raspberryConverter/IPImage.png"
 	for err != nil {
 		player.LastIP = "fail"
-		player.MakeImage("NO INTERNET")
+		player.MakeImage("NETWORK ERROR / NO INTERNET")
 		exec.Command("/bin/sh", "-c", cmd).Run()
 		fmt.Println("Error starting http server: ", err)
-		fmt.Println("trying again in 10 seconds")
+		fmt.Println("trying again in 1 second")
 		time.Sleep(1000000000) // 1 second expressed in nanoseconds
 		err = http.ListenAndServe(port, nil)
 		player.LastIP = "try"
