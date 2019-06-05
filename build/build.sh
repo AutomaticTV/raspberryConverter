@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Copy files to pi-gen
+# Clone pi-gen and copy
+git clone https://github.com/RPi-Distro/pi-gen.git
 mkdir pi-gen/stage2/04-raspberry-converter
 cp -r 04-raspberry-converter pi-gen/stage2/
 cp config pi-gen
@@ -15,7 +16,6 @@ rm ../goDeps.sh
 docker run --rm -v $(pwd)/pi-gen/stage2/04-raspberry-converter:/out raspberryconvertercompiler
 
 # Build the image
-git clone https://github.com/RPi-Distro/pi-gen.git
 cd pi-gen
 touch stage3/SKIP
 touch stage4/SKIP
