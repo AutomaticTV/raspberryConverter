@@ -15,6 +15,7 @@ rm ../goDeps.sh
 docker run --rm -v $(pwd)/pi-gen/stage2/04-raspberry-converter:/out raspberryconvertercompiler
 
 # Build the image
+git clone https://github.com/RPi-Distro/pi-gen.git
 cd pi-gen
 touch stage3/SKIP
 touch stage4/SKIP
@@ -28,6 +29,5 @@ docker-compose up -d
 mv deploy/*.zip ..
 
 # Clean
-rm -rf deploy
-sudo rm -rf stage2/04-raspberry-converter
-rm config
+cd ..
+rm -rf pi-gen
