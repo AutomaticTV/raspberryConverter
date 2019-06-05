@@ -44,7 +44,7 @@ When code changes, step 1 and 2 must be repeated to take effect.
 ## BUILD THE IMAGE
 Unlike the development environment this process requires a x86 Linux machine (may work in macOS since it basically uses Docker, but this is not tested).
 
-1. [Install Docker](https://docs.docker.com/install/) (if you don't have it already).
+1. [Install Docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/) (if you don't have it already).
 2. Install git (You should already have it).
 3. Check that the following files exist: `ls /lib/modules/$(uname -r)/kernel/fs/binfmt_misc.ko` and `ls /usr/bin/qemu-arm-static`. If you don't, you have to install [binfmt_misc](https://en.wikipedia.org/wiki/Binfmt_misc)
 4. (This shouldn't be necessary, but just in case) Load binfmt_misc module: `binfmt_misc`
