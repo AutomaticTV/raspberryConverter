@@ -4,10 +4,7 @@ raspberryConverter
 *.db
 *.zip
 *.img
-build/pi-gen/deploy/*
-buildpi-gen
-build/pi-gen/work/*
-config
+build/pi-gen
 postrun.sh
 .pc
 *-pc
