@@ -30,4 +30,4 @@ mv deploy/*.zip ..
 
 # Clean
 cd ..
-rm -rf pi-gen
+# rm -rf pi-gen
