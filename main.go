@@ -197,8 +197,8 @@ func main() {
 		player.MakeImage("NETWORK ERROR / NO INTERNET")
 		exec.Command("/bin/sh", "-c", cmd).Run()
 		fmt.Println("Error starting http server: ", err)
-		fmt.Println("trying again in 1 second")
-		time.Sleep(1000000000) // 1 second expressed in nanoseconds
+		fmt.Println("trying again in 5 seconds")
+		time.Sleep(5000000000) // 5 second expressed in nanoseconds
 		err = http.ListenAndServe(port, nil)
 		player.LastIP = "try"
 	}

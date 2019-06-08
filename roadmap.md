@@ -2,16 +2,14 @@
 ### Fixtures
 * DISABLE SSH
 * Improve delay (research on ffmpeg / omxplayer buffers) ==> CHECK
-* Remove transport ==> CHECK
 * Set defaults for player settings  ==> CHECK
-* Fix "fake playing" ==> omxController.sh?   ==> CHECK
 ### Testing
 * Stable behavior on network drop  ==> CHECK
-* Playing for long time
 
 ---
 
 # Second release
+* Reduce time to play (trigger omxController.sh faster?)
 * Change resolution on Display IP (not only on play)
 * Refactor the code in order to get fully functional godoc
 * Shutdown / Reboot button (frontend and backend)
