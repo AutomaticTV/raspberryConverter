@@ -21,7 +21,7 @@ import (
 )
 
 // port describe the port listened by the server, example: http://localhost:5555
-const port = ":80"
+const port = ":1234"
 
 // handler processes the requests received by the server and respon to them
 // according to the content of the request.
@@ -181,7 +181,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	staticFiles := packr.NewBox("frontend/static")
 	frontend.Init()
-	player.Init()
 	auth.Init()
 	fmt.Println("Server starting, point your browser to localhost" + port + " to start")
 	// ENDPOINTS
@@ -202,4 +201,5 @@ func main() {
 		err = http.ListenAndServe(port, nil)
 		player.LastIP = "try"
 	}
+	player.Init()
 }

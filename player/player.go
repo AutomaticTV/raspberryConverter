@@ -13,8 +13,8 @@ import (
 // The commands to be executed are set by playerController
 func playerLoop(p *player, k *killing) {
 	initImageMaker()
-	var failCounter int
-	const failLimit = 10
+	var failCounter = 0
+	const failLimit = 5
 	for {
 		p.state = p.nextState
 		cmd := getNextCommand(p.nextState)
@@ -38,7 +38,6 @@ func playerLoop(p *player, k *killing) {
 			if failCounter > failLimit {
 				fmt.Println("Too many consecutive failures, trying to restart the player")
 				channel <- errorMsg
-				return
 			}
 		} else {
 			failCounter = 0
@@ -98,7 +97,7 @@ func getPlayCommand() (string, error) {
 	// transform the buffer ms => s
 	threshold := "--threshold " + strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64) + " "
 	channel <- startedMsg
-	return "omxplayer -o hdmi --live " + volume + threshold + decode + url + " && sudo killall fbi", nil
+	return "omxplayer -o hdmi --live " + volume + threshold + decode + url, nil
 }
 
 func forceDisplay() {

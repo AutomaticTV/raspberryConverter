@@ -50,7 +50,7 @@ func Init() {
 	// Create DB table if it doesn't exist. Run migrations if there is a new version
 	initStorage()
 	// Endless loop that gets requests concurrently and controll the player (start, stop, ...).
-	go playerController(displayingIP)
+	go playerController()
 	// Sends start message to player controller every autoPlayPeriod seconds if Autoplay is enabled
 	go autoPlay()
 }
@@ -82,9 +82,9 @@ func GetStatus() string {
 // it gets messages from the channel, triggered either by the importer of the package (startMsg || restartMsg || stopMsg) or by the player loop (errorMsg || doneMsg).
 // according to the received message and the current state of the player it will decide to (stop playing | start playing | stop playing and then start again).
 // Note that when the player is not playing the system displays a static image that shows the IP of the device.
-func playerController(initialState string) {
+func playerController() {
 	// Initialize the process with default action
-	p := player{state: runningNothing, nextState: initialState}
+	p := player{state: runningNothing, nextState: defaultState}
 	k := killing{}
 	go playerLoop(&p, &k)
 	// Endless channel reader loop:
@@ -115,7 +115,6 @@ func playerController(initialState string) {
 			fmt.Println("The player have experimented an error. Initializing again.")
 			err = killRuningProcess(&p, &k)
 			p = player{state: runningNothing, nextState: displayingIP}
-			go playerLoop(&p, &k)
 		default:
 			// IN THEORY THIS CASE SHOULD NEVER HAPPEN!
 			fmt.Println("Unrecognized message received from the channel: ", msg)
@@ -160,10 +159,10 @@ func killRuningProcess(p *player, k *killing) error {
 // if Autoplay is enabled in PLAYER config.
 func autoPlay() {
 	for {
-		time.Sleep(autoPlayPeriod * time.Second)
 		config, _ := GetConfig()
 		if config.Autoplay == "Yes" {
 			channel <- startMsg
 		}
+		time.Sleep(autoPlayPeriod * time.Second)
 	}
 }
