@@ -92,6 +92,7 @@ func playerController() {
 	for {
 		// wait for new mwssage
 		msg := <-channel
+		fmt.Println("New message from received by player controller: ", msg)
 		// decide the next state of the player based on the message
 		switch msg {
 		case startMsg:
@@ -139,19 +140,19 @@ func killRuningProcess(p *player, k *killing) error {
 		p.pipeIn.Write([]byte("q"))
 		return nil
 	}
-	k.mu.Lock()
-	defer k.mu.Unlock()
-	if p.state != runningNothing && !k.inProgress {
-		k.inProgress = true
-		// kill command
-		fmt.Println("Killing current process")
-		if err := p.command.Process.Kill(); err != nil {
-			k.inProgress = false
-			fmt.Println("failed to kill process: " + err.Error())
-			return err
-		}
-		fmt.Println("Process murdered")
-	}
+	// k.mu.Lock()
+	// defer k.mu.Unlock()
+	// if p.state != runningNothing && !k.inProgress {
+	// 	k.inProgress = true
+	// 	// kill command
+	// 	fmt.Println("Killing current process")
+	// 	if err := p.command.Process.Kill(); err != nil {
+	// 		k.inProgress = false
+	// 		fmt.Println("failed to kill process: " + err.Error())
+	// 		return err
+	// 	}
+	// 	fmt.Println("Process murdered")
+	// }
 	return nil
 }
 

@@ -110,7 +110,7 @@ var LastIP string
 
 // displayIP is a function that generates an image containing the IP of the system, and display it through the player
 func getDisplayCommand() (string, error) {
-	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 " + destinationFile + " && read x < /dev/fd/1"
+	const cmd = "sudo killall fbi && sudo fbi --noverbose -a -T 7 -d /dev/fb0 " + destinationFile + " && sleep 5"
 	// GET IP
 	config, err := network.GetConfig()
 	if err != nil {

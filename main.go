@@ -182,13 +182,14 @@ func main() {
 	staticFiles := packr.NewBox("frontend/static")
 	frontend.Init()
 	auth.Init()
-	fmt.Println("Server starting, point your browser to localhost" + port + " to start")
+	player.Init()
 	// ENDPOINTS
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(staticFiles)))
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/login", handler)
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/dashboard/", handler)
+	fmt.Println("Server starting, point your browser to http://(Pi IP):" + port + " to start")
 	err := http.ListenAndServe(port, nil)
 	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 /var/lib/raspberryConverter/IPImage.png"
 	for err != nil {
@@ -201,5 +202,4 @@ func main() {
 		err = http.ListenAndServe(port, nil)
 		player.LastIP = "try"
 	}
-	player.Init()
 }
