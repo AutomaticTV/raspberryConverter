@@ -3,8 +3,10 @@ package player
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"image"
 	"os"
+	"os/exec"
 
 	"github.com/fogleman/gg"
 	"github.com/gobuffalo/packr"
@@ -53,6 +55,9 @@ func initImageMaker() (*gg.Context, error) {
 	return imageMaker, nil
 }
 
+// LastLabel is the last string used to build image
+var LastLabel string
+
 // MakeImage stores a image at destinationFile, this new image is based on services/player/assets/bg.png with a label text placed in the middle of the image
 func MakeImage(label string) error {
 	imageMaker, err := initImageMaker()
@@ -77,5 +82,24 @@ func MakeImage(label string) error {
 	imageMaker.DrawStringAnchored(label, w/2, h/2, 0.5, 0.5)
 	// SAVE THE NEW IMAGE
 	imageMaker.Clip()
-	return imageMaker.SavePNG(destinationFile)
+	err = imageMaker.SavePNG(destinationFile)
+	if err != nil {
+		return err
+	}
+	LastLabel = label
+	return nil
+}
+
+// DisplayImageCommand is a function that generates an image containing the IP of the system, and display it through the player
+func DisplayImageCommand() error {
+	fmt.Println("======== Player Controller: DISPLAYING IP")
+	const command = "sudo killall fbi && sudo fbi --noverbose -a -T 7 -d /dev/fb0 " + destinationFile
+	// RUN THE COMMAND
+	cmd := exec.Command("/bin/sh", "-c", command)
+	out, err := cmd.CombinedOutput()
+	fmt.Println(command, " OUTPUT: ", string(out))
+	if err != nil {
+		return errors.New(command + " ERROR: " + err.Error())
+	}
+	return nil
 }

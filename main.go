@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os/exec"
 	"raspberryConverter/auth"
 	"raspberryConverter/frontend"
 	"raspberryConverter/models"
@@ -21,7 +20,7 @@ import (
 )
 
 // port describe the port listened by the server, example: http://localhost:5555
-const port = ":80"
+const port = ":4321"
 
 // handler processes the requests received by the server and respon to them
 // according to the content of the request.
@@ -191,15 +190,17 @@ func main() {
 	http.HandleFunc("/dashboard/", handler)
 	fmt.Println("Server starting, point your browser to http://(Pi IP):" + port + " to start")
 	err := http.ListenAndServe(port, nil)
-	const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 /var/lib/raspberryConverter/IPImage.png"
+	// const cmd = "sudo fbi --noverbose -a -T 7 -d /dev/fb0 /var/lib/raspberryConverter/IPImage.png"
 	for err != nil {
-		player.LastIP = "fail"
-		player.MakeImage("NETWORK ERROR / NO INTERNET")
-		exec.Command("/bin/sh", "-c", cmd).Run()
+		// player.MakeImage("NETWORK ERROR / NO INTERNET")
+		// err = player.DisplayImageCommand()
+		// if err != nil {
+		// 	fmt.Println("Error displaying image:", err)
+		// }
+		// exec.Command("/bin/sh", "-c", cmd).Run()
 		fmt.Println("Error starting http server: ", err)
 		fmt.Println("trying again in 5 seconds")
 		time.Sleep(5000000000) // 5 second expressed in nanoseconds
 		err = http.ListenAndServe(port, nil)
-		player.LastIP = "try"
 	}
 }
