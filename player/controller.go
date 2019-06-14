@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const whatchdogPeriod = 15                              // seconds between each autoplay check
+const whatchdogPeriod = 5                               // seconds between each autoplay check
 const destinationPath = "/var/lib/raspberryConverter/"  // path to store images (used to display IP)
 const destinationFile = destinationPath + "IPImage.png" // filepath to store images (used to display IP)
 
