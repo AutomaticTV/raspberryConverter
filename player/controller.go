@@ -66,7 +66,7 @@ func getPlayUri() (string, error) {
 	url := re.ReplaceAllString(config.URL, "rtmp://"+auth)
 	// transform the buffer ms => s
 	threshold := "--threshold " + strconv.FormatFloat(float64(config.Buffer)/1000.0, 'f', 3, 64) + " "
-	return "omxplayer -o hdmi --live " + volume + threshold + decode + url, nil
+	return "omxplayer -o hdmi " + volume + threshold + decode + url, nil
 }
 
 // Restart is a function that makes player start playing according to stored config
