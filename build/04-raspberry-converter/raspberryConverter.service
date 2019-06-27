@@ -5,8 +5,8 @@ Before=systemd-user-sessions.service
 
 [Service]
 Type=simple
-User=pi
-Group=pi
+User=root
+Group=root
 
 Restart=on-failure
 RestartSec=10
