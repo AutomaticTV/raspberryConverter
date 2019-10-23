@@ -74,6 +74,10 @@ func stringToOutputMode(mode string) (string, error) {
 		m = `"CEA 20"`
 	case "1080i59.94":
 		m = `"CEA 5"`
+	case "1080p25":
+		m = `"CEA 33"`
+	case "1080p30":
+		m = `"CEA 34"`
 	case "1080p50":
 		m = `"CEA 31"`
 	case "1080p59.94":
